@@ -1,0 +1,210 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useChatStore } from '@/lib/store';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles } from 'lucide-react';
+
+// 图标映射
+const iconMap: Record<string, LucideIcon> = {
+  Search,
+  ChefHat,
+  Headphones,
+  Tags,
+  Package,
+  MessageCircle,
+  Star,
+  BarChart3,
+  TrendingUp,
+  FileText,
+  Sparkles,
+};
+
+// 图标渲染函数
+const renderIcon = (iconName: string, className?: string) => {
+  const IconComponent = iconMap[iconName];
+  if (!IconComponent) {
+    return <Search className={className} />; // 默认图标
+  }
+  return <IconComponent className={className} />;
+};
+
+// Coze机器人配置
+interface CozeBot {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  botId: string; // Coze平台的Bot ID
+}
+
+// 机器人列表配置
+const COZE_BOTS: CozeBot[] = [
+  {
+    id: 'keyword-optimizer',
+    name: '关键词优化助手',
+    description: '专业的菜品关键词优化助手，为菜品名称生成优化的关键词',
+    icon: 'Search',
+    botId: '7432143655349338139' // 关键词优化助手的Coze Bot ID
+  },
+  {
+    id: 'meituan-customer-service',
+    name: '美团全能客服',
+    description: '专业的美团客服助手，提供全方位的客户服务支持',
+    icon: 'Headphones',
+    botId: '7450790638439907355' // 美团全能客服的Coze Bot ID
+  },
+  {
+    id: 'meituan-category-description',
+    name: '美团分类栏描述',
+    description: '智能生成店铺分类标签，优化商品展示效果',
+    icon: 'Tags',
+    botId: '7444769224897085503' // 美团分类栏描述的Coze Bot ID
+  },
+  {
+    id: 'meal-combo-assistant',
+    name: '外卖套餐搭配助手',
+    description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
+    icon: 'Package',
+    botId: '7432277388740329487' // 外卖套餐搭配助手的Coze Bot ID
+  },
+  {
+    id: 'meituan-review-assistant',
+    name: '美团评价解释助手',
+    description: '专业回复顾客评价，提升店铺好评率',
+    icon: 'MessageCircle',
+    botId: '7434355486700568591' // 美团评价解释助手的Coze Bot ID
+  },
+  {
+    id: 'takeout-review-generator',
+    name: '补单专用外卖好评',
+    description: '定制个性化评价内容，增加店铺真实性',
+    icon: 'Star',
+    botId: '7435167383192518675' // 补单专用外卖好评的Coze Bot ID
+  },
+  {
+    id: 'meituan-store-analyzer',
+    name: '美团店铺分解析',
+    description: '深度分析店铺数据，优化经营策略',
+    icon: 'BarChart3',
+    botId: '7441487397063245859' // 美团店铺分解析的Coze Bot ID
+  },
+  {
+    id: 'takeout-weekly-report',
+    name: '外卖数据周报分析',
+    description: '智能分析周数据报表，指导经营决策',
+    icon: 'TrendingUp',
+    botId: '7436564709694521371' // 外卖数据周报分析的Coze Bot ID
+  },
+  {
+    id: 'dish-description-writer',
+    name: '外卖菜品描述',
+    description: '能够根据菜品名称精准撰写吸引人的菜品描述',
+    icon: 'FileText',
+    botId: '7432146500114792487' // 外卖菜品描述的Coze Bot ID
+  },
+  {
+    id: 'meituan-brand-story',
+    name: '美团品牌故事',
+    description: '输入店铺名+经营品类 自动生成品牌故事文案',
+    icon: 'Sparkles',
+    botId: '7488662536091811877' // 美团品牌故事的Coze Bot ID
+  }
+];
+
+interface BotSelectorProps {
+  onSelectBot?: () => void; // 移动端选择后关闭侧边栏
+}
+
+export function BotSelector({ onSelectBot }: BotSelectorProps) {
+  const { selectedModelId, setSelectedModel, createNewSession, clearAllSessions } = useChatStore();
+  const [selectedBotId, setSelectedBotId] = useState('keyword-optimizer');
+
+  const handleSelectBot = (bot: CozeBot) => {
+    setSelectedBotId(bot.id);
+
+    // 清空所有会话，确保完全重新开始
+    clearAllSessions();
+
+    // 根据不同的机器人选择对应的模型ID
+    const getModelId = (botId: string): string => {
+      const modelMap: Record<string, string> = {
+        'keyword-optimizer': 'coze',
+        'meituan-customer-service': 'coze-meituan',
+        'meituan-category-description': 'coze-category',
+        'meal-combo-assistant': 'coze-meal-combo',
+        'meituan-review-assistant': 'coze-review-assistant',
+        'takeout-review-generator': 'coze-review-generator',
+        'meituan-store-analyzer': 'coze-store-analyzer',
+        'takeout-weekly-report': 'coze-weekly-report',
+        'dish-description-writer': 'coze-dish-description',
+        'meituan-brand-story': 'coze-brand-story',
+      };
+      return modelMap[botId] || 'coze';
+    };
+
+    const modelId = getModelId(bot.id);
+    setSelectedModel(modelId);
+
+    // 创建新的对话会话，让用户进入对话界面
+    createNewSession(modelId);
+
+    // 移动端关闭侧边栏
+    onSelectBot?.();
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center space-x-2 mb-3">
+        <Bot className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          智能助手
+        </h3>
+      </div>
+
+      <div className="space-y-1">
+        {COZE_BOTS.map((bot) => (
+          <Button
+            key={bot.id}
+            variant="ghost"
+            className={`w-full justify-start p-2.5 h-auto text-left transition-colors group ${
+              selectedBotId === bot.id
+                ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-700 dark:text-gray-300'
+            }`}
+            onClick={() => handleSelectBot(bot)}
+          >
+            <div className="flex items-center space-x-3 w-full">
+              <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
+                selectedBotId === bot.id
+                  ? 'bg-gray-900 dark:bg-white'
+                  : 'bg-gray-200 dark:bg-gray-700'
+              }`}>
+                {renderIcon(bot.icon, `h-4 w-4 ${
+                  selectedBotId === bot.id
+                    ? 'text-white dark:text-gray-900'
+                    : 'text-gray-600 dark:text-gray-400'
+                }`)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-medium truncate">
+                  {bot.name}
+                </h4>
+              </div>
+            </div>
+          </Button>
+        ))}
+      </div>
+
+      {/* 添加新机器人的提示 */}
+      <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            更多智能助手即将上线...
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

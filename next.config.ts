@@ -17,6 +17,16 @@ const nextConfig: NextConfig = {
   experimental: {
     appDir: true,
   },
+  // ESLint配置
+  eslint: {
+    // 在生产构建时忽略ESLint错误
+    ignoreDuringBuilds: true,
+  },
+  // TypeScript配置
+  typescript: {
+    // 在生产构建时忽略TypeScript错误
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

@@ -34,7 +34,7 @@ export function convertToGeminiFormat(messages: Message[], systemPrompt?: string
 export async function callGeminiAPI(
   messages: Message[],
   modelId: string,
-  onChunk?: (chunk: string) => void
+  _onChunk?: (chunk: string) => void
 ): Promise<string> {
   const model = getModelById(modelId);
   if (!model) {
@@ -207,10 +207,7 @@ interface CozeChatRequest {
   additional_messages: CozeMessage[];
 }
 
-interface CozeStreamEvent {
-  event: string;
-  data: string;
-}
+
 
 interface CozeChatResponse {
   id: string;

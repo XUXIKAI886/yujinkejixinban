@@ -1,0 +1,13 @@
+# 排除文档目录
+docs/
+*.md
+README.md
+DEPLOY.md
+
+# 排除部署脚本
+deploy.sh
+deploy.bat
+
+# 排除Git相关文件
+.git/
+.gitignore

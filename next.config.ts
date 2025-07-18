@@ -13,10 +13,6 @@ const nextConfig: NextConfig = {
   assetPrefix: process.env.GITHUB_PAGES ? `/${process.env.GITHUB_REPOSITORY?.split('/')[1] || ''}` : '',
   // 确保静态导出
   distDir: 'out',
-  // 禁用服务端功能
-  experimental: {
-    appDir: true,
-  },
   // ESLint配置
   eslint: {
     // 在生产构建时忽略ESLint错误

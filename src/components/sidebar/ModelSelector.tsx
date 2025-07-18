@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PRESET_MODELS } from '@/config/models';
 import { useChatStore } from '@/lib/store';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 
 export function ModelSelector() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +49,7 @@ export function ModelSelector() {
 
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 glass-effect border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto animate-scale-in">
-          {PRESET_MODELS.map((model, index) => (
+          {PRESET_MODELS.map((model) => (
             <button
               key={model.id}
               className="w-full p-4 text-left hover:bg-white/20 dark:hover:bg-gray-800/30 border-b border-white/10 dark:border-gray-700/30 last:border-b-0 transition-all duration-200 group"

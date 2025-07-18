@@ -117,7 +117,7 @@ interface BotSelectorProps {
 }
 
 export function BotSelector({ onSelectBot }: BotSelectorProps) {
-  const { selectedModelId, setSelectedModel, createNewSession, clearAllSessions } = useChatStore();
+  const { setSelectedModel, createNewSession, clearAllSessions } = useChatStore();
   const [selectedBotId, setSelectedBotId] = useState('keyword-optimizer');
 
   const handleSelectBot = (bot: CozeBot) => {

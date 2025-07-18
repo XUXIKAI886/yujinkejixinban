@@ -10,7 +10,7 @@ interface MessageInputProps {
   sessionId: string;
 }
 
-export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
+export function MessageInput({ sessionId }: MessageInputProps) {
   const [input, setInput] = useState('');
   const [isComposing, setIsComposing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);

@@ -34,7 +34,7 @@ export function convertToGeminiFormat(messages: Message[], systemPrompt?: string
 export async function callGeminiAPI(
   messages: Message[],
   modelId: string,
-  _onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string) => void
 ): Promise<string> {
   const model = getModelById(modelId);
   if (!model) {
@@ -219,10 +219,10 @@ interface CozeChatResponse {
   created_at: number;
   completed_at: number;
   failed_at?: number;
-  meta_data: any;
-  last_error?: any;
+  meta_data: Record<string, unknown>;
+  last_error?: { code?: string; msg?: string };
   status: 'created' | 'in_progress' | 'completed' | 'failed' | 'requires_action';
-  required_action?: any;
+  required_action?: Record<string, unknown>;
   usage: {
     token_count: number;
     output_count: number;
@@ -361,8 +361,8 @@ async function getCozeMessages(chatId: string): Promise<string> {
     // 查找最后一条助手回复
     if (data.data && Array.isArray(data.data)) {
       const assistantMessages = data.data
-        .filter((msg: any) => msg.role === 'assistant' && msg.type === 'answer')
-        .sort((a: any, b: any) => b.created_at - a.created_at);
+        .filter((msg: { role: string; type: string }) => msg.role === 'assistant' && msg.type === 'answer')
+        .sort((a: { created_at: number }, b: { created_at: number }) => b.created_at - a.created_at);
 
       if (assistantMessages.length > 0) {
         return assistantMessages[0].content || '抱歉，我没有生成回复。';

@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { WeatherWidget } from '@/components/ui/weather-widget';
 import { ChatSession } from '@/types';
 import { getModelById } from '@/config/models';
 import { useChatStore } from '@/lib/store';
@@ -73,6 +74,7 @@ export function ChatHeader({ session }: ChatHeaderProps) {
       </div>
 
       <div className="flex items-center space-x-2">
+        <WeatherWidget />
         <ThemeToggle />
         <Button
           variant="ghost"

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BotSelector } from './BotSelector';
+import { WeatherWidget } from '@/components/ui/weather-widget';
 import { Menu, X } from 'lucide-react';
 
 export function Sidebar() {

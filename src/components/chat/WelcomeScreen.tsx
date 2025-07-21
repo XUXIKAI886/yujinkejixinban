@@ -8,18 +8,18 @@ export function WelcomeScreen() {
   const features = [
     {
       icon: <Bot className="h-6 w-6" />,
-      title: '专业机器人',
-      description: '每个机器人都专注于特定领域的专业服务'
+      title: '美团业务专家',
+      description: '10个专业AI助手，覆盖外卖经营全流程'
     },
     {
       icon: <Search className="h-6 w-6" />,
-      title: '关键词优化',
-      description: '专业的菜品关键词生成和优化助手'
+      title: '智能内容生成',
+      description: '关键词优化、菜品描述、品牌故事一键生成'
     },
     {
       icon: <Zap className="h-6 w-6" />,
-      title: '实时响应',
-      description: '快速获得专业的智能回复和建议'
+      title: '数据分析洞察',
+      description: '店铺分析、周报解读、评价管理智能化'
     }
   ];
 

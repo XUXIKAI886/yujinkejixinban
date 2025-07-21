@@ -11,8 +11,8 @@ export function Sidebar() {
   const sidebarContent = (
     <div className="flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800/50">
       {/* Header */}
-      <div className="p-4 border-b border-gray-100 dark:border-gray-800/50">
-        <div className="flex items-center justify-between">
+      <div className="px-4 py-4 border-b border-gray-100 dark:border-gray-800/50">
+        <div className="flex items-center justify-between min-h-[2.5rem]">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
               <span className="text-white dark:text-black text-sm font-bold">AI</span>

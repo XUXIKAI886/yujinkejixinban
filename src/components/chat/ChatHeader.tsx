@@ -55,17 +55,17 @@ export function ChatHeader({ session }: ChatHeaderProps) {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800/50 bg-white dark:bg-gray-950">
-      <div className="flex items-center space-x-3">
+    <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 dark:border-gray-800/50 bg-white dark:bg-gray-950">
+      <div className="flex items-center space-x-3 min-h-[2.5rem]">
         <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
           {renderIcon(model?.icon || 'Bot', 'h-5 w-5 text-gray-600 dark:text-gray-400')}
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
             {model?.name || '未知机器人'}
           </h2>
           <div className="flex items-center space-x-3 mt-0.5">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-400 leading-tight">
               {model?.description || '智能对话助手'}
             </span>
           </div>

@@ -196,11 +196,16 @@ function getBotIdByModel(modelId: string): string {
 }
 
 // Coze API 请求接口
+interface CozeMessageContent {
+  type: 'text' | 'image';
+  text?: string;
+  file_id?: string;
+}
+
 interface CozeMessage {
   role: 'user' | 'assistant';
-  content: string;
-  content_type: 'text';
-  file_ids?: string[];
+  content: string | CozeMessageContent[];
+  content_type: 'text' | 'object_string';
 }
 
 interface CozeChatRequest {
@@ -235,25 +240,44 @@ interface CozeChatResponse {
 export function convertToCozeFormat(messages: Message[], fileIds?: string[]): CozeMessage[] {
   const cozeMessages = messages
     .filter(msg => msg.role !== 'system') // 过滤系统消息
-    .map(msg => ({
-      role: msg.role as 'user' | 'assistant',
-      content: msg.content,
-      content_type: 'text' as const
-    }));
+    .map((msg, index) => {
+      const isLastUserMessage = index === messages.length - 1 && msg.role === 'user';
 
-  // 如果有文件且最后一条是用户消息，将文件ID添加到该消息中
-  if (fileIds && fileIds.length > 0 && cozeMessages.length > 0) {
-    const lastMessage = cozeMessages[cozeMessages.length - 1];
-    if (lastMessage.role === 'user') {
-      // 确保有内容
-      if (!lastMessage.content.trim()) {
-        lastMessage.content = '请分析这些文件';
+      // 如果是最后一条用户消息且有文件，使用多模态格式
+      if (isLastUserMessage && fileIds && fileIds.length > 0) {
+        const content: CozeMessageContent[] = [];
+
+        // 添加文本内容
+        const textContent = msg.content.trim() || '请分析这些文件';
+        content.push({
+          type: 'text',
+          text: textContent
+        });
+
+        // 添加图片文件
+        fileIds.forEach(fileId => {
+          content.push({
+            type: 'image',
+            file_id: fileId
+          });
+        });
+
+        console.log('📎 创建多模态消息:', content);
+
+        return {
+          role: msg.role as 'user' | 'assistant',
+          content: content,
+          content_type: 'object_string' as const
+        };
       }
-      // 将文件ID添加到消息中
-      lastMessage.file_ids = fileIds;
-      console.log('📎 为用户消息添加文件ID:', fileIds);
-    }
-  }
+
+      // 普通文本消息
+      return {
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+        content_type: 'text' as const
+      };
+    });
 
   return cozeMessages;
 }
@@ -434,9 +458,16 @@ async function uploadFileToCoze(file: File): Promise<string> {
     const result = await response.json();
     console.log('✅ 文件上传成功:', result);
 
-    // 返回文件ID - 检查多种可能的响应格式
-    const fileId = result.data?.id || result.id || result.file_id;
+    // 检查API返回的code字段
+    if (result.code !== 0) {
+      console.error('❌ 文件上传API返回错误:', result);
+      throw new Error(`文件上传失败: ${result.msg || '未知错误'}`);
+    }
+
+    // 根据文档格式提取文件ID
+    const fileId = result.data?.id;
     console.log('📋 提取的文件ID:', fileId);
+    console.log('📋 文件信息:', result.data);
 
     if (!fileId) {
       console.error('❌ 无法从响应中提取文件ID:', result);

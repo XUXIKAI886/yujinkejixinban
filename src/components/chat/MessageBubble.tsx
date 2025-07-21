@@ -45,7 +45,7 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
         {/* Avatar */}
         <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
           isUser
-            ? 'bg-black dark:bg-white text-white dark:text-black'
+            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300'
             : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
         }`}>
           {isUser ? (
@@ -59,7 +59,7 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
         <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} flex-1`}>
           <div className={`relative px-4 py-3 rounded-lg ${
             isUser
-              ? 'bg-black dark:bg-white text-white dark:text-black'
+              ? 'bg-blue-100 dark:bg-blue-900/30 text-gray-800 dark:text-blue-100'
               : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
           }`}>
             <div className="whitespace-pre-wrap break-words leading-relaxed text-sm">

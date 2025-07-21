@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
 import { useChat } from '@/hooks/useChat';
-import { Send, Square, Paperclip, X } from 'lucide-react';
+import { uploadImages } from '@/lib/imageUpload';
+import { Send, Square, Paperclip, X, Upload } from 'lucide-react';
 
 interface MessageInputProps {
   sessionId: string;
@@ -14,6 +15,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const [input, setInput] = useState('');
   const [isComposing, setIsComposing] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isLoading, error, selectedModelId } = useChatStore();
@@ -34,7 +36,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if ((!input.trim() && uploadedImages.length === 0) || isLoading) return;
+    if ((!input.trim() && uploadedImages.length === 0) || isLoading || isUploading) return;
 
     const userMessage = input.trim();
     const images = [...uploadedImages];
@@ -43,8 +45,40 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
     setInput('');
     setUploadedImages([]);
 
-    // 使用useChat hook发送消息（包含图片）
-    await sendMessage(userMessage, images);
+    try {
+      let messageContent = userMessage;
+
+      // 如果有图片，先上传获取URL
+      if (images.length > 0) {
+        setIsUploading(true);
+        console.log('🖼️ 开始上传图片...');
+
+        const uploadResults = await uploadImages(images);
+        console.log('✅ 图片上传完成:', uploadResults);
+
+        // 将图片URL添加到消息内容中
+        const imageUrls = uploadResults.map(result => result.url);
+        const imageText = imageUrls.map((url, index) =>
+          `图片${index + 1}: ${url}`
+        ).join('\n');
+
+        messageContent = userMessage ?
+          `${userMessage}\n\n${imageText}` :
+          imageText;
+
+        setIsUploading(false);
+      }
+
+      // 使用useChat hook发送消息（包含图片URL）
+      await sendMessage(messageContent);
+
+    } catch (error) {
+      console.error('处理消息失败:', error);
+      setIsUploading(false);
+      // 如果上传失败，恢复输入内容
+      setInput(userMessage);
+      setUploadedImages(images);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -123,7 +157,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
                   placeholder={isImageSupportedBot ? "输入您的消息或上传图片..." : "输入您的消息..."}
                   className="w-full resize-none bg-transparent px-4 py-3 pr-20 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none disabled:opacity-50 rounded-lg"
                   rows={1}
-                  disabled={isLoading}
+                  disabled={isLoading || isUploading}
                   style={{ minHeight: '48px', maxHeight: '200px' }}
                 />
 
@@ -143,8 +177,19 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
                     </Button>
                   )}
 
-                  {/* 发送/停止按钮 */}
-                  {isLoading ? (
+                  {/* 发送/停止/上传按钮 */}
+                  {isUploading ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      disabled
+                      className="h-8 w-8 p-0 text-blue-500 dark:text-blue-400 rounded-lg"
+                      title="正在上传图片..."
+                    >
+                      <Upload className="h-4 w-4 animate-pulse" />
+                    </Button>
+                  ) : isLoading ? (
                     <Button
                       type="button"
                       size="sm"
@@ -159,7 +204,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
                     <Button
                       type="submit"
                       size="sm"
-                      disabled={(!input.trim() && uploadedImages.length === 0) || isLoading}
+                      disabled={(!input.trim() && uploadedImages.length === 0) || isLoading || isUploading}
                       className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       title="发送消息"
                     >

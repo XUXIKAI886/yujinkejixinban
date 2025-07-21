@@ -5,7 +5,6 @@ export interface Message {
   content: string;
   timestamp: number;
   isStreaming?: boolean;
-  images?: File[]; // 添加图片支持
 }
 
 // 模型配置类型

@@ -40,7 +40,7 @@ export function ChatInterface() {
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-100 dark:border-gray-800/50">
+      <div>
         <MessageInput sessionId={currentSession.id} />
       </div>
     </div>

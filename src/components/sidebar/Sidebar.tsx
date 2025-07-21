@@ -9,9 +9,9 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800/50">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-950">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-gray-100 dark:border-gray-800/50">
+      <div className="px-4 py-4">
         <div className="flex items-center justify-between min-h-[2.5rem]">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
@@ -33,12 +33,12 @@ export function Sidebar() {
       </div>
 
       {/* Bot Selector */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-4">
         <BotSelector onSelectBot={() => setIsOpen(false)} />
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800/50">
+      <div className="p-4">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

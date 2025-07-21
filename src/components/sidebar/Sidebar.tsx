@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BotSelector } from './BotSelector';
-import { Menu, X } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ThemePreview } from '@/components/ui/theme-preview';
+import { Menu, X, Palette } from 'lucide-react';
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showThemePreview, setShowThemePreview] = useState(false);
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800">
@@ -20,6 +23,20 @@ export function Sidebar() {
             <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
               域锦科技
             </h1>
+          </div>
+
+          {/* 主题切换按钮 */}
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowThemePreview(true)}
+              className="w-10 h-10 p-0 rounded-lg hover:bg-white/20 dark:hover:bg-gray-800/30 transition-all duration-200"
+              title="主题预览"
+            >
+              <Palette className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+            </Button>
           </div>
           <Button
             variant="ghost"
@@ -77,6 +94,19 @@ export function Sidebar() {
           />
           <div className="absolute left-0 top-0 h-full w-80 max-w-[80vw]">
             {sidebarContent}
+          </div>
+        </div>
+      )}
+
+      {/* 主题预览模态框 */}
+      {showThemePreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowThemePreview(false)}
+          />
+          <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-4xl max-h-[90vh] overflow-y-auto">
+            <ThemePreview onClose={() => setShowThemePreview(false)} />
           </div>
         </div>
       )}

@@ -232,14 +232,24 @@ interface CozeChatResponse {
 }
 
 // 将消息转换为Coze格式
-export function convertToCozeFormat(messages: Message[]): CozeMessage[] {
-  return messages
+export function convertToCozeFormat(messages: Message[], fileIds?: string[]): CozeMessage[] {
+  const cozeMessages = messages
     .filter(msg => msg.role !== 'system') // 过滤系统消息
     .map(msg => ({
       role: msg.role as 'user' | 'assistant',
       content: msg.content,
       content_type: 'text' as const
     }));
+
+  // 如果有文件且最后一条是用户消息，确保有内容
+  if (fileIds && fileIds.length > 0 && cozeMessages.length > 0) {
+    const lastMessage = cozeMessages[cozeMessages.length - 1];
+    if (lastMessage.role === 'user' && !lastMessage.content.trim()) {
+      lastMessage.content = '请分析这些文件';
+    }
+  }
+
+  return cozeMessages;
 }
 
 // 调用Coze API (非流式)
@@ -265,7 +275,7 @@ export async function callCozeAPI(
     }
   }
 
-  const cozeMessages = convertToCozeFormat(messages);
+  const cozeMessages = convertToCozeFormat(messages, fileIds);
   console.log('📋 转换后的消息格式:', cozeMessages);
 
   const requestBody: CozeChatRequest = {
@@ -467,7 +477,7 @@ export async function callCozeAPIStream(
     }
   }
 
-  const cozeMessages = convertToCozeFormat(messages);
+  const cozeMessages = convertToCozeFormat(messages, fileIds);
   console.log('📋 转换后的消息格式:', cozeMessages);
 
   const requestBody: CozeChatRequest = {

@@ -33,7 +33,8 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
 
     if ((!input.trim() && selectedFiles.length === 0) || isLoading) return;
 
-    const userMessage = input.trim();
+    // 如果只有文件没有文字，提供默认消息
+    const userMessage = input.trim() || (selectedFiles.length > 0 ? '请分析这张图片' : '');
     const files = selectedFiles;
 
     setInput('');

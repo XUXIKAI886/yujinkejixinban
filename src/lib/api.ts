@@ -200,6 +200,7 @@ interface CozeMessage {
   role: 'user' | 'assistant';
   content: string;
   content_type: 'text';
+  file_ids?: string[];
 }
 
 interface CozeChatRequest {
@@ -208,7 +209,6 @@ interface CozeChatRequest {
   stream: boolean;
   auto_save_history: boolean;
   additional_messages: CozeMessage[];
-  file_ids?: string[];
 }
 
 
@@ -241,11 +241,17 @@ export function convertToCozeFormat(messages: Message[], fileIds?: string[]): Co
       content_type: 'text' as const
     }));
 
-  // 如果有文件且最后一条是用户消息，确保有内容
+  // 如果有文件且最后一条是用户消息，将文件ID添加到该消息中
   if (fileIds && fileIds.length > 0 && cozeMessages.length > 0) {
     const lastMessage = cozeMessages[cozeMessages.length - 1];
-    if (lastMessage.role === 'user' && !lastMessage.content.trim()) {
-      lastMessage.content = '请分析这些文件';
+    if (lastMessage.role === 'user') {
+      // 确保有内容
+      if (!lastMessage.content.trim()) {
+        lastMessage.content = '请分析这些文件';
+      }
+      // 将文件ID添加到消息中
+      lastMessage.file_ids = fileIds;
+      console.log('📎 为用户消息添加文件ID:', fileIds);
     }
   }
 
@@ -283,9 +289,8 @@ export async function callCozeAPI(
     user_id: COZE_CONFIG.userId,
     stream: false,
     auto_save_history: true,
-    additional_messages: cozeMessages,
-    // 如果有文件，添加到请求中
-    ...(fileIds.length > 0 && { file_ids: fileIds })
+    additional_messages: cozeMessages
+    // 文件ID现在包含在消息中，不需要顶层参数
   };
 
   console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));
@@ -485,9 +490,8 @@ export async function callCozeAPIStream(
     user_id: COZE_CONFIG.userId,
     stream: true,
     auto_save_history: true,
-    additional_messages: cozeMessages,
-    // 如果有文件，添加到请求中
-    ...(fileIds.length > 0 && { file_ids: fileIds })
+    additional_messages: cozeMessages
+    // 文件ID现在包含在消息中，不需要顶层参数
   };
 
   console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));

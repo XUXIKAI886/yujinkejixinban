@@ -9,9 +9,9 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800/50">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+      <div className="p-4 border-b border-gray-100 dark:border-gray-800/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
@@ -38,7 +38,7 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+      <div className="p-4 border-t border-gray-100 dark:border-gray-800/50">
         <div className="text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

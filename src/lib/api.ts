@@ -204,7 +204,7 @@ interface CozeMessageContent {
 
 interface CozeMessage {
   role: 'user' | 'assistant';
-  content: string | CozeMessageContent[];
+  content: string;
   content_type: 'text' | 'object_string';
 }
 
@@ -262,11 +262,14 @@ export function convertToCozeFormat(messages: Message[], fileIds?: string[]): Co
           });
         });
 
+        // 将content数组序列化为JSON字符串
+        const serializedContent = JSON.stringify(content);
         console.log('📎 创建多模态消息:', content);
+        console.log('📎 序列化后的内容:', serializedContent);
 
         return {
           role: msg.role as 'user' | 'assistant',
-          content: content,
+          content: serializedContent,
           content_type: 'object_string' as const
         };
       }

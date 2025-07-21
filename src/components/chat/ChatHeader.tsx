@@ -5,7 +5,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ChatSession } from '@/types';
 import { getModelById } from '@/config/models';
 import { useChatStore } from '@/lib/store';
-import { RotateCcw, Bot, PenTool, BarChart3, Code, Globe, GraduationCap, Search, ChefHat, Headphones, Tags, Package, MessageCircle, Star, TrendingUp, FileText, Sparkles, LucideIcon } from 'lucide-react';
+import { RotateCcw, Bot, PenTool, BarChart3, Code, Globe, GraduationCap, Search, ChefHat, Headphones, Tags, Package, MessageCircle, Star, TrendingUp, FileText, Sparkles, Target, Palette, LucideIcon } from 'lucide-react';
 
 // 图标映射 - 与BotSelector保持一致
 const iconMap: Record<string, LucideIcon> = {
@@ -21,6 +21,8 @@ const iconMap: Record<string, LucideIcon> = {
   TrendingUp,
   FileText,
   Sparkles,
+  Target,
+  Palette,
   // 其他可能用到的图标
   Bot,
   PenTool,

@@ -170,6 +170,28 @@ export const PRESET_MODELS: ModelConfig[] = [
     icon: 'Sparkles',
     systemPrompt: '你是一个专业的品牌故事撰写师，专门为美团店铺创作品牌故事文案。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
     provider: 'coze'
+  },
+  {
+    id: 'coze-dianjin-master',
+    name: '美团点金推广大师',
+    description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Target',
+    systemPrompt: '你是一个拥有6年推广经验的美团点金推广大师，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    provider: 'coze'
+  },
+  {
+    id: 'coze-logo-design',
+    name: '美团logo设计',
+    description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
+    model: 'coze-bot',
+    temperature: 0.8,
+    max_tokens: 4096,
+    icon: 'Palette',
+    systemPrompt: '你是一个专业的美团logo设计师，能够根据参考图生成相应的logo设计词汇和建议。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    provider: 'coze'
   }
 ];
 

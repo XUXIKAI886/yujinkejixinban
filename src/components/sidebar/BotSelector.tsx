@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -18,6 +18,8 @@ const iconMap: Record<string, LucideIcon> = {
   TrendingUp,
   FileText,
   Sparkles,
+  Target,
+  Palette,
 };
 
 // 图标渲染函数
@@ -109,6 +111,20 @@ const COZE_BOTS: CozeBot[] = [
     description: '输入店铺名+经营品类 自动生成品牌故事文案',
     icon: 'Sparkles',
     botId: '7488662536091811877' // 美团品牌故事的Coze Bot ID
+  },
+  {
+    id: 'meituan-dianjin-master',
+    name: '美团点金推广大师',
+    description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
+    icon: 'Target',
+    botId: '7461438144458850340' // 美团点金推广大师的Coze Bot ID
+  },
+  {
+    id: 'meituan-logo-design',
+    name: '美团logo设计',
+    description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
+    icon: 'Palette',
+    botId: '7478318467453009954' // 美团logo设计的Coze Bot ID
   }
 ];
 
@@ -139,6 +155,8 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'takeout-weekly-report': 'coze-weekly-report',
         'dish-description-writer': 'coze-dish-description',
         'meituan-brand-story': 'coze-brand-story',
+        'meituan-dianjin-master': 'coze-dianjin-master',
+        'meituan-logo-design': 'coze-logo-design',
       };
       return modelMap[botId] || 'coze';
     };

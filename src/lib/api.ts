@@ -85,7 +85,8 @@ export async function callGeminiAPIStream(
   modelId: string,
   onChunk: (chunk: string) => void,
   onComplete: () => void,
-  onError: (error: Error) => void
+  onError: (error: Error) => void,
+  files?: File[]
 ): Promise<void> {
   try {
     // 注意：当前的API可能不支持流式响应
@@ -188,7 +189,7 @@ function getBotIdByModel(modelId: string): string {
     'coze-dish-description': '7432146500114792487',  // 外卖菜品描述
     'coze-brand-story': '7488662536091811877',       // 美团品牌故事
     'coze-dianjin-master': '7461438144458850340',    // 美团点金推广大师
-    'coze-logo-design': '7478318467453009954',       // 美团logo设计
+    'coze-logo-design': '7529356136379219994',       // 美团logo设计
   };
 
   return botIdMap[modelId] || COZE_CONFIG.botId; // 默认使用配置中的Bot ID
@@ -207,6 +208,7 @@ interface CozeChatRequest {
   stream: boolean;
   auto_save_history: boolean;
   additional_messages: CozeMessage[];
+  file_ids?: string[];
 }
 
 
@@ -243,10 +245,25 @@ export function convertToCozeFormat(messages: Message[]): CozeMessage[] {
 // 调用Coze API (非流式)
 export async function callCozeAPI(
   messages: Message[],
-  modelId: string
+  modelId: string,
+  files?: File[]
 ): Promise<string> {
   console.log('🚀 开始Coze非流式API调用');
   console.log('📝 消息:', messages);
+  console.log('📁 文件:', files);
+
+  // 处理文件上传
+  let fileIds: string[] = [];
+  if (files && files.length > 0) {
+    console.log('📤 开始上传文件...');
+    try {
+      fileIds = await Promise.all(files.map(file => uploadFileToCoze(file)));
+      console.log('✅ 所有文件上传完成:', fileIds);
+    } catch (error) {
+      console.error('❌ 文件上传失败:', error);
+      throw new Error('文件上传失败，请重试');
+    }
+  }
 
   const cozeMessages = convertToCozeFormat(messages);
   console.log('📋 转换后的消息格式:', cozeMessages);
@@ -256,7 +273,9 @@ export async function callCozeAPI(
     user_id: COZE_CONFIG.userId,
     stream: false,
     auto_save_history: true,
-    additional_messages: cozeMessages
+    additional_messages: cozeMessages,
+    // 如果有文件，添加到请求中
+    ...(fileIds.length > 0 && { file_ids: fileIds })
   };
 
   console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));
@@ -375,21 +394,70 @@ async function getCozeMessages(chatId: string): Promise<string> {
   }
 }
 
+// 上传文件到Coze
+async function uploadFileToCoze(file: File): Promise<string> {
+  console.log('📤 开始上传文件到Coze:', file.name);
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch(`https://api.coze.cn/v1/files/upload`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${COZE_CONFIG.apiKey}`,
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ 文件上传失败:', response.status, errorText);
+      throw new Error(`文件上传失败: ${response.status} ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ 文件上传成功:', result);
+
+    // 返回文件ID
+    return result.data?.id || result.id;
+  } catch (error) {
+    console.error('❌ 文件上传错误:', error);
+    throw error;
+  }
+}
+
 // 流式调用Coze API
 export async function callCozeAPIStream(
   messages: Message[],
   modelId: string,
   onChunk: (chunk: string) => void,
   onComplete: () => void,
-  onError: (error: Error) => void
+  onError: (error: Error) => void,
+  files?: File[]
 ): Promise<void> {
   console.log('🚀 开始Coze流式API调用');
   console.log('📝 消息:', messages);
+  console.log('📁 文件:', files);
   console.log('🔧 配置:', {
     botId: COZE_CONFIG.botId,
     userId: COZE_CONFIG.userId,
     endpoint: COZE_ENDPOINTS.CHAT
   });
+
+  // 处理文件上传
+  let fileIds: string[] = [];
+  if (files && files.length > 0) {
+    console.log('📤 开始上传文件...');
+    try {
+      fileIds = await Promise.all(files.map(file => uploadFileToCoze(file)));
+      console.log('✅ 所有文件上传完成:', fileIds);
+    } catch (error) {
+      console.error('❌ 文件上传失败:', error);
+      onError(new Error('文件上传失败，请重试'));
+      return;
+    }
+  }
 
   const cozeMessages = convertToCozeFormat(messages);
   console.log('📋 转换后的消息格式:', cozeMessages);
@@ -399,7 +467,9 @@ export async function callCozeAPIStream(
     user_id: COZE_CONFIG.userId,
     stream: true,
     auto_save_history: true,
-    additional_messages: cozeMessages
+    additional_messages: cozeMessages,
+    // 如果有文件，添加到请求中
+    ...(fileIds.length > 0 && { file_ids: fileIds })
   };
 
   console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));

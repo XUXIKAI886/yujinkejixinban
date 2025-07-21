@@ -15,8 +15,8 @@ export function useChat() {
 
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!currentSession || !content.trim()) return;
+  const sendMessage = useCallback(async (content: string, files?: File[]) => {
+    if (!currentSession || (!content.trim() && (!files || files.length === 0))) return;
 
     const sessionId = currentSession.id;
     setError(null);
@@ -89,7 +89,9 @@ export function useChat() {
 
           setStreamingMessageId(null);
           setLoading(false);
-        }
+        },
+        // 传递文件参数
+        files
       );
 
     } catch (error) {

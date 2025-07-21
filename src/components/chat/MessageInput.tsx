@@ -4,8 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
 import { useChat } from '@/hooks/useChat';
-import { uploadImages } from '@/lib/imageUpload';
-import { Send, Square, Paperclip, X, Upload } from 'lucide-react';
+import { Send, Square, Paperclip, X } from 'lucide-react';
 
 interface MessageInputProps {
   sessionId: string;
@@ -14,15 +13,11 @@ interface MessageInputProps {
 export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const [input, setInput] = useState('');
   const [isComposing, setIsComposing] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { isLoading, error, selectedModelId } = useChatStore();
+  const { isLoading, error } = useChatStore();
   const { sendMessage, stopGeneration } = useChat();
-
-  // 检查当前是否是支持图片的机器人
-  const isImageSupportedBot = selectedModelId === 'coze-logo-design';
 
   // Auto-resize textarea
   useEffect(() => {
@@ -36,49 +31,16 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if ((!input.trim() && uploadedImages.length === 0) || isLoading || isUploading) return;
+    if ((!input.trim() && selectedFiles.length === 0) || isLoading) return;
 
     const userMessage = input.trim();
-    const images = [...uploadedImages];
+    const files = selectedFiles;
 
-    // 清空输入和图片
     setInput('');
-    setUploadedImages([]);
+    setSelectedFiles([]);
 
-    try {
-      let messageContent = userMessage;
-
-      // 如果有图片，先上传获取URL
-      if (images.length > 0) {
-        setIsUploading(true);
-        console.log('🖼️ 开始上传图片...');
-
-        const uploadResults = await uploadImages(images);
-        console.log('✅ 图片上传完成:', uploadResults);
-
-        // 将图片URL添加到消息内容中
-        const imageUrls = uploadResults.map(result => result.url);
-        const imageText = imageUrls.map((url, index) =>
-          `图片${index + 1}: ${url}`
-        ).join('\n');
-
-        messageContent = userMessage ?
-          `${userMessage}\n\n${imageText}` :
-          imageText;
-
-        setIsUploading(false);
-      }
-
-      // 使用useChat hook发送消息（包含图片URL）
-      await sendMessage(messageContent);
-
-    } catch (error) {
-      console.error('处理消息失败:', error);
-      setIsUploading(false);
-      // 如果上传失败，恢复输入内容
-      setInput(userMessage);
-      setUploadedImages(images);
-    }
+    // 使用useChat hook发送消息（包含文件）
+    await sendMessage(userMessage, files);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -92,28 +54,25 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
     stopGeneration();
   };
 
-  // 处理图片上传
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const imageFiles = Array.from(files).filter(file =>
-        file.type.startsWith('image/')
-      );
-      setUploadedImages(prev => [...prev, ...imageFiles]);
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+    if (imageFiles.length > 0) {
+      setSelectedFiles(prev => [...prev, ...imageFiles]);
     }
-    // 清空input值，允许重复选择同一文件
+
+    // 清空input以允许重复选择同一文件
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // 移除图片
-  const removeImage = (index: number) => {
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  // 触发文件选择
-  const triggerFileSelect = () => {
+  const handleAttachClick = () => {
     fileInputRef.current?.click();
   };
 
@@ -121,110 +80,100 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
     <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="relative">
-          {/* 图片预览区域 */}
-          {uploadedImages.length > 0 && (
+          {/* 文件预览区域 */}
+          {selectedFiles.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-2">
-              {uploadedImages.map((image, index) => (
+              {selectedFiles.map((file, index) => (
                 <div key={index} className="relative group">
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt={`上传的图片 ${index + 1}`}
-                    className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-                  />
+                  <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={file.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <button
                     type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                    title="删除图片"
+                    onClick={() => removeFile(index)}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="w-3 h-3" />
                   </button>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 rounded-b-lg truncate">
+                    {file.name}
+                  </div>
                 </div>
               ))}
             </div>
           )}
 
           <div className="flex items-end space-x-3">
-            <div className="flex-1 relative">
-              <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
-                <textarea
-                  ref={textareaRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  onCompositionStart={() => setIsComposing(true)}
-                  onCompositionEnd={() => setIsComposing(false)}
-                  placeholder={isImageSupportedBot ? "输入您的消息或上传图片..." : "输入您的消息..."}
-                  className="w-full resize-none bg-transparent px-4 py-3 pr-20 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none disabled:opacity-50 rounded-lg"
-                  rows={1}
-                  disabled={isLoading || isUploading}
-                  style={{ minHeight: '48px', maxHeight: '200px' }}
-                />
+          <div className="flex-1 relative">
+            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={() => setIsComposing(false)}
+                placeholder="输入您的消息..."
+                className="w-full resize-none bg-transparent px-4 py-3 pr-14 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none disabled:opacity-50 rounded-lg"
+                rows={1}
+                disabled={isLoading}
+                style={{ minHeight: '48px', maxHeight: '200px' }}
+              />
 
-                <div className="absolute right-2 bottom-2 flex items-center space-x-1">
-                  {/* 图片上传按钮 - 只在支持图片的机器人中显示 */}
-                  {isImageSupportedBot && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      onClick={triggerFileSelect}
-                      disabled={isLoading}
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                      title="上传图片"
-                    >
-                      <Paperclip className="h-4 w-4" />
-                    </Button>
-                  )}
+              <div className="absolute right-2 bottom-2 flex items-center space-x-1">
+                {/* 文件上传按钮 */}
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleAttachClick}
+                  className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                  title="上传图片"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
 
-                  {/* 发送/停止/上传按钮 */}
-                  {isUploading ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      disabled
-                      className="h-8 w-8 p-0 text-blue-500 dark:text-blue-400 rounded-lg"
-                      title="正在上传图片..."
-                    >
-                      <Upload className="h-4 w-4 animate-pulse" />
-                    </Button>
-                  ) : isLoading ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      onClick={handleStop}
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                      title="停止生成"
-                    >
-                      <Square className="h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      size="sm"
-                      disabled={(!input.trim() && uploadedImages.length === 0) || isLoading || isUploading}
-                      className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="发送消息"
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
+                {/* 发送/停止按钮 */}
+                {isLoading ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleStop}
+                    className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    title="停止生成"
+                  >
+                    <Square className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={(!input.trim() && selectedFiles.length === 0) || isLoading}
+                    className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="发送消息"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
+
+              {/* 隐藏的文件输入 */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+              />
             </div>
           </div>
-
-          {/* 隐藏的文件输入 */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="hidden"
-          />
+        </div>
 
         {/* Error message */}
         {error && (

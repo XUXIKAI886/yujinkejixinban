@@ -124,7 +124,7 @@ const COZE_BOTS: CozeBot[] = [
     name: '美团logo设计',
     description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
     icon: 'Palette',
-    botId: '7478318467453009954' // 美团logo设计的Coze Bot ID
+    botId: '7529356136379219994' // 美团logo设计的Coze Bot ID
   }
 ];
 

@@ -419,8 +419,16 @@ async function uploadFileToCoze(file: File): Promise<string> {
     const result = await response.json();
     console.log('✅ 文件上传成功:', result);
 
-    // 返回文件ID
-    return result.data?.id || result.id;
+    // 返回文件ID - 检查多种可能的响应格式
+    const fileId = result.data?.id || result.id || result.file_id;
+    console.log('📋 提取的文件ID:', fileId);
+
+    if (!fileId) {
+      console.error('❌ 无法从响应中提取文件ID:', result);
+      throw new Error('文件上传成功但无法获取文件ID');
+    }
+
+    return fileId;
   } catch (error) {
     console.error('❌ 文件上传错误:', error);
     throw error;
@@ -473,6 +481,8 @@ export async function callCozeAPIStream(
   };
 
   console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));
+  console.log('🤖 使用的Bot ID:', getBotIdByModel(modelId));
+  console.log('📁 文件IDs:', fileIds);
 
   try {
     console.log('🌐 发送请求到:', COZE_ENDPOINTS.CHAT);
@@ -621,7 +631,8 @@ export async function callCozeAPIStream(
                 return;
               } else if (currentEvent === 'conversation.chat.failed') {
                 console.error('❌ 对话失败:', parsed);
-                throw new Error(parsed?.msg || '对话失败');
+                const errorMsg = parsed?.msg || parsed?.error || parsed?.message || '对话失败，可能是文件格式不支持或机器人配置问题';
+                throw new Error(errorMsg);
               } else if (currentEvent === 'done') {
                 console.log('🏁 流结束');
                 onComplete();

@@ -62,25 +62,21 @@ export function ChatHeader({ session }: ChatHeaderProps) {
         <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
           {renderIcon(model?.icon || 'Bot', 'h-5 w-5 text-gray-600 dark:text-gray-400')}
         </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
-                {model?.name || '未知机器人'}
-              </h2>
-              <div className="flex items-center space-x-3 mt-0.5">
-                <span className="text-sm text-gray-500 dark:text-gray-400 leading-tight">
-                  {model?.description || '智能对话助手'}
-                </span>
-              </div>
-            </div>
-
-            {/* 运营小贴士 - 放在标题右侧 */}
-            <div className="hidden md:block ml-4">
-              <SimpleTipsTicker />
-            </div>
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
+            {model?.name || '未知机器人'}
+          </h2>
+          <div className="flex items-center space-x-3 mt-0.5">
+            <span className="text-sm text-gray-500 dark:text-gray-400 leading-tight">
+              {model?.description || '智能对话助手'}
+            </span>
           </div>
         </div>
+      </div>
+
+      {/* 运营小贴士 - 居中显示 */}
+      <div className="hidden md:block flex-1 px-8">
+        <SimpleTipsTicker />
       </div>
 
       <div className="flex items-center space-x-2">

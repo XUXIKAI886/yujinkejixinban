@@ -37,7 +37,37 @@
 
 ## 🆕 最近更新
 
-### 🔄 **v2.1.0 - ChatGPT风格界面优化** (2024-12-19)
+### � **v2.2.0 - 图片上传功能** (2025-01-21)
+
+#### 🎯 **重大更新**
+- **📸 图片上传功能**: 完整实现图片上传功能，支持美团logo设计机器人
+- **🤖 新增机器人**: 添加美团点金推广大师和美团logo设计两个专业机器人
+- **🔧 Coze API优化**: 修复多模态消息格式，确保图片正确识别
+- **🛠️ 错误处理改进**: 增强文件上传和API调用的错误处理机制
+- **📋 文档完善**: 详细记录图片上传和Coze API集成的技术细节
+
+#### 🛠️ **技术改进**
+- **图片上传流程**:
+  - 新增文件上传按钮和图片预览功能
+  - 实现Coze文件上传API集成
+  - 支持多图上传和单独删除功能
+- **多模态消息格式修复**:
+  - 发现并修复content字段必须为JSON字符串的关键问题
+  - 正确实现`content: "[{\"type\":\"text\",\"text\":\"...\"},{\"type\":\"image\",\"file_id\":\"...\"}]"`格式
+  - 解决AI无法识别图片内容的根本问题
+- **机器人配置扩展**:
+  - 新增美团点金推广大师 (Bot ID: 7461438144458850340)
+  - 新增美团logo设计 (Bot ID: 7529356136379219994)
+  - 完善Bot ID映射和模型配置
+
+#### 🎨 **功能特性**
+- **📎 一键上传**: 点击输入框右侧回形针图标即可上传图片
+- **🖼️ 图片预览**: 上传后显示缩略图，支持删除操作
+- **🤖 AI识别**: 上传的图片被AI正确识别和分析
+- **💬 智能对话**: 支持纯图片分析或图片+文字组合
+- **🎨 专业分析**: 美团logo设计机器人提供专业的设计建议
+
+### �🔄 **v2.1.0 - ChatGPT风格界面优化** (2024-12-19)
 
 #### 🎯 **重大更新**
 - **🎨 ChatGPT风格界面**: 完全重新设计为ChatGPT风格的黑白简约界面
@@ -205,6 +235,8 @@
 | **外卖数据周报分析** | 📈 | 数据报表分析 | 经营决策、趋势分析 | 智能分析周报，指导决策 |
 | **外卖菜品描述** | 📝 | 菜品文案撰写 | 菜单优化、营销文案 | 根据菜品名称撰写吸引描述 |
 | **美团品牌故事** | ✨ | 品牌文案创作 | 品牌建设、营销推广 | 店铺名+品类生成品牌故事 |
+| **美团点金推广大师** | 🎯 | 推广策略优化 | 美团推广、营销投放 | 6年推广经验，熟悉点金规则 |
+| **美团logo设计** | 🎨 | Logo设计分析 | 品牌设计、视觉优化 | 上传logo图片，生成设计建议 |
 
 </div>
 
@@ -577,6 +609,20 @@ const COZE_BOTS: CozeBot[] = [
     description: '输入店铺名+经营品类 自动生成品牌故事文案',
     icon: 'Sparkles',
     botId: '7488662536091811877' // 美团品牌故事
+  },
+  {
+    id: 'meituan-dianjin-master',
+    name: '美团点金推广大师',
+    description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
+    icon: 'Target',
+    botId: '7461438144458850340' // 美团点金推广大师
+  },
+  {
+    id: 'meituan-logo-design',
+    name: '美团logo设计',
+    description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
+    icon: 'Palette',
+    botId: '7529356136379219994' // 美团logo设计 (支持图片上传)
   }
 ]
 ```
@@ -624,6 +670,8 @@ const COZE_BOTS: CozeBot[] = [
        'coze-weekly-report': '7436564709694521371',     // 外卖数据周报分析
        'coze-dish-description': '7432146500114792487',  // 外卖菜品描述
        'coze-brand-story': '7488662536091811877',       // 美团品牌故事
+       'coze-dianjin-master': '7461438144458850340',    // 美团点金推广大师
+       'coze-logo-design': '7529356136379219994',       // 美团logo设计
        'coze-your-bot': 'your_bot_id_here',            // 新机器人
      };
      return botIdMap[modelId] || COZE_CONFIG.botId;
@@ -993,6 +1041,287 @@ try {
   } else {
     throw new Error('发送消息失败，请重试')
   }
+}
+```
+
+## 📸 图片上传功能
+
+### 🎯 **功能概述**
+
+本平台支持图片上传功能，特别适用于**美团logo设计机器人**，可以上传logo参考图片进行AI分析和设计建议。
+
+### ✨ **功能特性**
+
+| 特性 | 说明 | 状态 |
+|------|------|------|
+| 📎 **一键上传** | 点击输入框右侧的回形针图标即可上传 | ✅ 已完成 |
+| 🖼️ **图片预览** | 上传后显示缩略图预览，支持删除 | ✅ 已完成 |
+| 📱 **多图支持** | 支持同时上传多张图片 | ✅ 已完成 |
+| 🎨 **格式支持** | 支持 JPG、PNG、GIF 等常见图片格式 | ✅ 已完成 |
+| 🤖 **AI识别** | 上传的图片会被AI正确识别和分析 | ✅ 已完成 |
+| 💬 **智能对话** | 可以只上传图片，也可以图片+文字组合 | ✅ 已完成 |
+
+### 🚀 **使用方法**
+
+#### 1️⃣ **基本使用**
+```
+1. 选择"美团logo设计"机器人
+2. 点击输入框右侧的 📎 图标
+3. 选择要上传的logo图片
+4. 可选择性添加文字描述
+5. 点击发送，AI将分析图片并提供设计建议
+```
+
+#### 2️⃣ **支持的使用场景**
+- **纯图片分析**: 只上传图片，AI自动分析
+- **图片+问题**: 上传图片并提出具体问题
+- **多图对比**: 上传多张图片进行对比分析
+- **设计建议**: 获取专业的logo设计建议
+
+### 🔧 **技术实现**
+
+#### 文件上传流程
+```mermaid
+graph LR
+    A[选择图片] --> B[上传到Coze API]
+    B --> C[获取文件ID]
+    C --> D[构建多模态消息]
+    D --> E[发送给AI机器人]
+    E --> F[AI分析并回复]
+```
+
+#### 关键技术点
+```typescript
+// 1. 文件上传API
+const uploadResponse = await fetch('https://api.coze.cn/v1/files/upload', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+  },
+  body: formData
+});
+
+// 2. 多模态消息格式 (关键!)
+const content = JSON.stringify([
+  {
+    "type": "text",
+    "text": "请分析这张logo图片"
+  },
+  {
+    "type": "image",
+    "file_id": "7529365722008076323"
+  }
+]);
+
+// 3. 发送消息
+const message = {
+  "role": "user",
+  "content": content,  // 注意：必须是JSON字符串！
+  "content_type": "object_string"
+};
+```
+
+## 🔗 Coze API 集成详解
+
+### 📋 **API配置要求**
+
+#### 必需的API权限
+```
+✅ chat        - 发起对话权限
+✅ uploadFile  - 文件上传权限
+```
+
+#### 环境变量配置
+```env
+# Coze API配置 (必需)
+NEXT_PUBLIC_COZE_API_KEY=pat_bcAfYrlVRNzf5FSEVMEChFpK4uzrGlUZcNhhAkWUpqn89rCLHsabHzuxnFrsEPLN
+NEXT_PUBLIC_COZE_BASE_URL=https://api.coze.cn/v3
+```
+
+### 🤖 **机器人配置**
+
+#### 当前支持的机器人
+```typescript
+const COZE_BOTS = [
+  {
+    id: 'keyword-optimizer',
+    name: '关键词优化助手',
+    botId: '7432143655349338139'
+  },
+  {
+    id: 'meituan-dianjin-master',
+    name: '美团点金推广大师',
+    botId: '7461438144458850340'
+  },
+  {
+    id: 'meituan-logo-design',
+    name: '美团logo设计',
+    botId: '7529356136379219994'  // 支持图片上传
+  },
+  // ... 更多机器人
+];
+```
+
+#### 添加新机器人的步骤
+```typescript
+// 1. 在 BotSelector.tsx 中添加配置
+{
+  id: 'your-bot-id',
+  name: '机器人名称',
+  description: '功能描述',
+  icon: 'IconName',
+  botId: 'coze_bot_id_here'  // 从Coze平台获取
+}
+
+// 2. 在 models.ts 中添加模型配置
+{
+  id: 'coze-your-bot',
+  name: '机器人名称',
+  description: '功能描述',
+  model: 'coze-bot',
+  provider: 'coze'
+}
+
+// 3. 在 api.ts 中添加Bot ID映射
+const botIdMap: Record<string, string> = {
+  'coze-your-bot': 'your_coze_bot_id',
+  // ...
+};
+```
+
+### 🔧 **关键API格式**
+
+#### 1️⃣ **文件上传API**
+```typescript
+// 正确的文件上传格式
+const formData = new FormData();
+formData.append('file', file);
+
+const response = await fetch('https://api.coze.cn/v1/files/upload', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+    // 注意：不要设置 Content-Type，让浏览器自动设置
+  },
+  body: formData
+});
+
+// 响应格式
+{
+  "code": 0,
+  "data": {
+    "id": "7529365722008076323",
+    "bytes": 152236,
+    "file_name": "logo.jpg",
+    "created_at": 1753067212
+  },
+  "msg": ""
+}
+```
+
+#### 2️⃣ **多模态消息格式** ⚠️ **重要！**
+```typescript
+// ❌ 错误格式 (常见错误)
+const message = {
+  "role": "user",
+  "content": [  // 错误：不能是数组对象
+    {"type": "text", "text": "分析图片"},
+    {"type": "image", "file_id": "xxx"}
+  ],
+  "content_type": "object_string"
+};
+
+// ✅ 正确格式 (必须这样写)
+const content = JSON.stringify([
+  {"type": "text", "text": "分析图片"},
+  {"type": "image", "file_id": "xxx"}
+]);
+
+const message = {
+  "role": "user",
+  "content": content,  // 必须是JSON字符串！
+  "content_type": "object_string"
+};
+```
+
+#### 3️⃣ **聊天API调用**
+```typescript
+// 发起对话API
+const response = await fetch('https://api.coze.cn/v3/chat', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "bot_id": "7529356136379219994",
+    "user_id": "user_123",
+    "stream": true,
+    "auto_save_history": true,
+    "additional_messages": [message]
+  })
+});
+```
+
+### 🚨 **常见错误和解决方案**
+
+#### 错误1: "Request parameter error" (code: 4000)
+```
+原因：多模态消息格式错误
+解决：确保content字段是JSON字符串，不是对象数组
+
+❌ content: [{type: "text", text: "..."}]
+✅ content: "[{\"type\":\"text\",\"text\":\"...\"}]"
+```
+
+#### 错误2: "文件上传失败" (404错误)
+```
+原因：API端点路径错误
+解决：使用正确的文件上传端点
+
+❌ https://api.coze.cn/v3/v1/files/upload
+✅ https://api.coze.cn/v1/files/upload
+```
+
+#### 错误3: "AI无法识别图片内容"
+```
+原因：文件ID没有正确关联到消息
+解决：检查多模态消息格式和文件ID
+
+1. 确认文件上传成功并获得正确的file_id
+2. 确认消息格式为JSON字符串
+3. 确认content_type为"object_string"
+```
+
+#### 错误4: "权限不足"
+```
+原因：API密钥缺少必要权限
+解决：确保API密钥具有以下权限：
+- chat: 发起对话
+- uploadFile: 文件上传
+```
+
+### 🔍 **调试技巧**
+
+#### 启用详细日志
+```typescript
+// 在开发环境中启用调试日志
+console.log('📤 文件上传成功:', uploadResult);
+console.log('📋 文件ID:', fileId);
+console.log('📎 多模态消息:', content);
+console.log('📤 请求体:', requestBody);
+```
+
+#### 检查API响应
+```typescript
+// 检查文件上传响应
+if (result.code !== 0) {
+  console.error('文件上传失败:', result.msg);
+}
+
+// 检查聊天API响应
+if (response.status !== 200) {
+  console.error('聊天API调用失败:', await response.text());
 }
 ```
 

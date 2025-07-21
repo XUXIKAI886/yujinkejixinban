@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
 import { useChat } from '@/hooks/useChat';
-import { Send, Square } from 'lucide-react';
+import { Send, Square, Paperclip, X } from 'lucide-react';
 
 interface MessageInputProps {
   sessionId: string;
@@ -13,9 +13,14 @@ interface MessageInputProps {
 export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const [input, setInput] = useState('');
   const [isComposing, setIsComposing] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { isLoading, error } = useChatStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isLoading, error, selectedModelId } = useChatStore();
   const { sendMessage, stopGeneration } = useChat();
+
+  // 检查当前是否是支持图片的机器人
+  const isImageSupportedBot = selectedModelId === 'coze-logo-design';
 
   // Auto-resize textarea
   useEffect(() => {
@@ -29,13 +34,17 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && uploadedImages.length === 0) || isLoading) return;
 
     const userMessage = input.trim();
-    setInput('');
+    const images = [...uploadedImages];
 
-    // 使用useChat hook发送消息
-    await sendMessage(userMessage);
+    // 清空输入和图片
+    setInput('');
+    setUploadedImages([]);
+
+    // 使用useChat hook发送消息（包含图片）
+    await sendMessage(userMessage, images);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -49,54 +58,128 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
     stopGeneration();
   };
 
+  // 处理图片上传
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const imageFiles = Array.from(files).filter(file =>
+        file.type.startsWith('image/')
+      );
+      setUploadedImages(prev => [...prev, ...imageFiles]);
+    }
+    // 清空input值，允许重复选择同一文件
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // 移除图片
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // 触发文件选择
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="relative">
-          <div className="flex items-end space-x-3">
-          <div className="flex-1 relative">
-            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onCompositionStart={() => setIsComposing(true)}
-                onCompositionEnd={() => setIsComposing(false)}
-                placeholder="输入您的消息..."
-                className="w-full resize-none bg-transparent px-4 py-3 pr-14 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none disabled:opacity-50 rounded-lg"
-                rows={1}
-                disabled={isLoading}
-                style={{ minHeight: '48px', maxHeight: '200px' }}
-              />
-
-              <div className="absolute right-2 bottom-2">
-                {isLoading ? (
-                  <Button
+          {/* 图片预览区域 */}
+          {uploadedImages.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {uploadedImages.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`上传的图片 ${index + 1}`}
+                    className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                  />
+                  <button
                     type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleStop}
-                    className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                    title="停止生成"
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                    title="删除图片"
                   >
-                    <Square className="h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    size="sm"
-                    disabled={!input.trim() || isLoading}
-                    className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="发送消息"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                )}
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-end space-x-3">
+            <div className="flex-1 relative">
+              <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onCompositionStart={() => setIsComposing(true)}
+                  onCompositionEnd={() => setIsComposing(false)}
+                  placeholder={isImageSupportedBot ? "输入您的消息或上传图片..." : "输入您的消息..."}
+                  className="w-full resize-none bg-transparent px-4 py-3 pr-20 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none disabled:opacity-50 rounded-lg"
+                  rows={1}
+                  disabled={isLoading}
+                  style={{ minHeight: '48px', maxHeight: '200px' }}
+                />
+
+                <div className="absolute right-2 bottom-2 flex items-center space-x-1">
+                  {/* 图片上传按钮 - 只在支持图片的机器人中显示 */}
+                  {isImageSupportedBot && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={triggerFileSelect}
+                      disabled={isLoading}
+                      className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                      title="上传图片"
+                    >
+                      <Paperclip className="h-4 w-4" />
+                    </Button>
+                  )}
+
+                  {/* 发送/停止按钮 */}
+                  {isLoading ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleStop}
+                      className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                      title="停止生成"
+                    >
+                      <Square className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      size="sm"
+                      disabled={(!input.trim() && uploadedImages.length === 0) || isLoading}
+                      className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="发送消息"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+
+          {/* 隐藏的文件输入 */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+            className="hidden"
+          />
 
         {/* Error message */}
         {error && (

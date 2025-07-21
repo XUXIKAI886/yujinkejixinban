@@ -62,9 +62,33 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
               ? 'bg-blue-100 dark:bg-blue-900/30 text-gray-800 dark:text-blue-100'
               : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
           }`}>
-            <div className="whitespace-pre-wrap break-words leading-relaxed text-sm">
-              {message.content}
-            </div>
+            {/* 显示图片 */}
+            {message.images && message.images.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {message.images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={URL.createObjectURL(image)}
+                    alt={`上传的图片 ${index + 1}`}
+                    className="max-w-xs max-h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => {
+                      // 点击图片可以查看大图
+                      const newWindow = window.open();
+                      if (newWindow) {
+                        newWindow.document.write(`<img src="${URL.createObjectURL(image)}" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`);
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 文字内容 */}
+            {message.content && (
+              <div className="whitespace-pre-wrap break-words leading-relaxed text-sm">
+                {message.content}
+              </div>
+            )}
 
             {/* Streaming indicator */}
             {message.isStreaming && message.content === '' && (

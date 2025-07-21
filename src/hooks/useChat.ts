@@ -15,8 +15,8 @@ export function useChat() {
 
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!currentSession || !content.trim()) return;
+  const sendMessage = useCallback(async (content: string, images?: File[]) => {
+    if (!currentSession || (!content.trim() && (!images || images.length === 0))) return;
 
     const sessionId = currentSession.id;
     setError(null);
@@ -26,7 +26,8 @@ export function useChat() {
       // 添加用户消息
       addMessage(sessionId, {
         role: 'user',
-        content: content.trim()
+        content: content.trim(),
+        images: images // 添加图片信息
       });
 
       // 创建AI消息占位符

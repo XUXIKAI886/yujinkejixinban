@@ -9,7 +9,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-950">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-800">
       {/* Header */}
       <div className="px-4 py-4">
         <div className="flex items-center justify-between min-h-[2.5rem]">
@@ -24,7 +24,7 @@ export function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="md:hidden hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             onClick={() => setIsOpen(false)}
           >
             <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -57,7 +57,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors shadow-lg border border-gray-200 dark:border-gray-700"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-lg border border-gray-200 dark:border-gray-600"
         onClick={() => setIsOpen(true)}
       >
         <Menu className="h-5 w-5 text-gray-700 dark:text-gray-300" />

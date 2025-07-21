@@ -57,16 +57,16 @@
 
 /* 深色模式变量 */
 .dark {
-  --neutral-50: #171717;
-  --neutral-100: #262626;
-  --neutral-200: #404040;
-  --neutral-300: #525252;
-  --neutral-400: #737373;
-  --neutral-500: #a3a3a3;
-  --neutral-600: #d4d4d4;
-  --neutral-700: #e5e5e5;
-  --neutral-800: #f5f5f5;
-  --neutral-900: #fafafa;
+  --neutral-50: #1f2937;  /* 深灰色背景 */
+  --neutral-100: #374151;
+  --neutral-200: #4b5563;
+  --neutral-300: #6b7280;
+  --neutral-400: #9ca3af;
+  --neutral-500: #d1d5db;
+  --neutral-600: #e5e7eb;
+  --neutral-700: #f3f4f6;
+  --neutral-800: #f9fafb;
+  --neutral-900: #ffffff;
 }
 
 /* 基础样式重置和优化 */

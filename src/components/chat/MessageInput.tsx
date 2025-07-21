@@ -78,7 +78,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
   };
 
   return (
-    <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+    <div className="p-4 bg-white dark:bg-gray-800">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="relative">
           {/* 文件预览区域 */}
@@ -86,7 +86,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
             <div className="mb-3 flex flex-wrap gap-2">
               {selectedFiles.map((file, index) => (
                 <div key={index} className="relative group">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
                     <img
                       src={URL.createObjectURL(file)}
                       alt={file.name}
@@ -110,7 +110,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
 
           <div className="flex items-end space-x-3">
           <div className="flex-1 relative">
-            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
+            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
               <textarea
                 ref={textareaRef}
                 value={input}
@@ -155,7 +155,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
                     type="submit"
                     size="sm"
                     disabled={(!input.trim() && selectedFiles.length === 0) || isLoading}
-                    className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="h-8 w-8 p-0 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     title="发送消息"
                   >
                     <Send className="h-4 w-4" />
@@ -178,7 +178,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
 
         {/* Error message */}
         {error && (
-          <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-red-500 rounded-full"></div>
               <p className="text-sm text-red-700 dark:text-red-300">{error}</p>

@@ -86,7 +86,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           code: ({ inline, className, children, ...props }: ComponentProps<'code'> & { inline?: boolean }) => {
             if (inline) {
               return (
-                <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-red-600 dark:text-red-400 rounded text-sm font-mono" {...props}>
+                <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 rounded text-sm font-mono" {...props}>
                   {children}
                 </code>
               );
@@ -100,7 +100,7 @@ export function MarkdownRenderer({ content, className = '' }: MarkdownRendererPr
           
           // 代码块样式
           pre: ({ children, ...props }) => (
-            <pre className="mb-3 p-3 bg-gray-900 dark:bg-gray-950 rounded-lg overflow-x-auto text-sm last:mb-0" {...props}>
+            <pre className="mb-3 p-3 bg-gray-900 dark:bg-gray-900 rounded-lg overflow-x-auto text-sm last:mb-0" {...props}>
               {children}
             </pre>
           ),

@@ -24,7 +24,7 @@ export function WelcomeScreen() {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 bg-white dark:bg-gray-950">
+    <div className="flex flex-col items-center justify-center h-full p-8 bg-white dark:bg-gray-800">
       {/* 主题切换按钮 - 右上角 */}
       <div className="absolute top-6 right-6 z-20">
         <ThemeToggle />

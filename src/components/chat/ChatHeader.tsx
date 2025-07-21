@@ -55,9 +55,9 @@ export function ChatHeader({ session }: ChatHeaderProps) {
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-4 bg-white dark:bg-gray-950">
+    <div className="flex items-center justify-between px-4 py-4 bg-white dark:bg-gray-800">
       <div className="flex items-center space-x-3 min-h-[2.5rem]">
-        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
           {renderIcon(model?.icon || 'Bot', 'h-5 w-5 text-gray-600 dark:text-gray-400')}
         </div>
         <div>

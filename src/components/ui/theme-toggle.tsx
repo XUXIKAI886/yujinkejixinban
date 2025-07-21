@@ -44,7 +44,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="w-10 h-10 p-0 rounded-lg hover:bg-white/20 dark:hover:bg-gray-800/30 transition-all duration-200 group"
+      className="w-10 h-10 p-0 rounded-lg hover:bg-white/20 dark:hover:bg-gray-700/30 transition-all duration-200 group"
       title={isDark ? '切换到浅色模式' : '切换到深色模式'}
     >
       <div className="relative w-5 h-5">

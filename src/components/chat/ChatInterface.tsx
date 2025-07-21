@@ -24,7 +24,7 @@ export function ChatInterface() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-950">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-800">
       {/* Header */}
       <ChatHeader session={currentSession} />
 

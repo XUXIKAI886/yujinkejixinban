@@ -4,7 +4,7 @@ import { CozeAPITest } from '@/components/test/CozeAPITest';
 
 export default function TestCozePage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <CozeAPITest />
     </div>
   );

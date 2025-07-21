@@ -215,7 +215,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
       </div>
 
       {/* 添加新机器人的提示 */}
-      <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
+      <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">

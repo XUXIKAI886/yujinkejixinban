@@ -1,19 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { useChatStore } from '@/lib/store';
-import { Plus, Bot, Search, Zap, Target } from 'lucide-react';
+import { Bot, Search, Zap } from 'lucide-react';
 
 export function WelcomeScreen() {
-  const { createNewSession, selectedModelId, setSelectedModel } = useChatStore();
-
-  const handleStartChat = (modelId?: string) => {
-    if (modelId) {
-      setSelectedModel(modelId);
-    }
-    createNewSession(modelId || selectedModelId);
-  };
 
   const features = [
     {
@@ -83,52 +73,7 @@ export function WelcomeScreen() {
           ))}
         </div>
 
-        {/* Quick start info */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-            开始使用AI机器人
-          </h2>
-          <div className="max-w-2xl mx-auto">
-            <div className="rounded-xl p-6 border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                  <Target className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                    关键词优化助手
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    专业的菜品关键词生成和优化助手
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                请在左侧选择机器人，然后点击下方按钮开始对话
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Default start button */}
-        <div className="mb-16">
-          <Button
-            size="lg"
-            onClick={() => handleStartChat('coze')}
-            className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black px-8 py-3 text-base font-medium transition-colors rounded-lg"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            开始对话
-          </Button>
-        </div>
-
-        {/* Footer */}
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <p>基于 Next.js 15 + Tailwind CSS + shadcn/ui 构建</p>
-          </div>
-        </div>
       </div>
     </div>
   );

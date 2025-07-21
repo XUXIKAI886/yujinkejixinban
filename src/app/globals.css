@@ -69,6 +69,14 @@
   --neutral-900: #ffffff;
 }
 
+/* 文本截断样式 */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
 /* 基础样式重置和优化 */
 * {
   box-sizing: border-box;

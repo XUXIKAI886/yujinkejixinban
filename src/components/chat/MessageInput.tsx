@@ -55,7 +55,7 @@ export function MessageInput({ sessionId: _sessionId }: MessageInputProps) {
         <form onSubmit={handleSubmit} className="relative">
           <div className="flex items-end space-x-3">
           <div className="flex-1 relative">
-            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
+            <div className="relative rounded-lg border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 hover:border-gray-400 dark:hover:border-gray-500 transition-colors focus-within:border-gray-500 dark:focus-within:border-gray-400">
               <textarea
                 ref={textareaRef}
                 value={input}

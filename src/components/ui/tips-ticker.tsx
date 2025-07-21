@@ -33,11 +33,13 @@ export function SimpleTipsTicker() {
   if (!currentTip) return null;
 
   return (
-    <div className="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-400 w-full">
-      <span className="font-medium whitespace-nowrap">美团运营小贴士：</span>
+    <div className="flex items-center justify-center space-x-2 text-sm w-full">
+      <span className="font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
+        美团运营小贴士：
+      </span>
       <span
-        className={`transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-50'
+        className={`font-medium text-gray-800 dark:text-gray-200 transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-70'
         }`}
       >
         {currentTip}

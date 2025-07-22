@@ -9,7 +9,7 @@ export function WelcomeScreen() {
     {
       icon: <Bot className="h-6 w-6" />,
       title: '美团业务专家',
-      description: '10个专业AI助手，覆盖外卖经营全流程'
+      description: '15个专业AI助手，覆盖外卖经营全流程'
     },
     {
       icon: <Search className="h-6 w-6" />,

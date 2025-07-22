@@ -355,6 +355,20 @@ export const PRESET_MODELS: ModelConfig[] = [
 示例数据：
 "分类栏优化已上线"`,
     provider: 'coze'
+  },
+  {
+    id: 'coze-menu-price-extractor',
+    name: '提取菜名和价格',
+    description: '精准提取图中的菜品名称和价格',
+    model: 'coze-bot',
+    temperature: 0.3,
+    max_tokens: 4096,
+    icon: 'ScanLine',
+    systemPrompt: '你是一个专业的菜单信息提取助手，专门从菜单图片中精准提取菜品名称和价格信息。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用提取菜名和价格助手！
+
+请直接上传菜单图，我能精准提取图中的菜品名称和价格`,
+    provider: 'coze'
   }
 ];
 

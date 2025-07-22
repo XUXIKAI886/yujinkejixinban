@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings, ScanLine } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -22,6 +22,7 @@ const iconMap: Record<string, LucideIcon> = {
   Palette,
   Image,
   Settings,
+  ScanLine,
 };
 
 // 图标渲染函数
@@ -141,6 +142,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '用简洁明了的语言向商家解释各项优化的内容、目的和好处',
     icon: 'Settings',
     botId: '7461202295062396954' // 美团外卖代运营助手的Coze Bot ID
+  },
+  {
+    id: 'menu-price-extractor',
+    name: '提取菜名和价格',
+    description: '精准提取图中的菜品名称和价格',
+    icon: 'ScanLine',
+    botId: '7469300056269602842' // 提取菜名和价格的Coze Bot ID
   }
 ];
 
@@ -175,6 +183,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'meituan-logo-design': 'coze-logo-design',
         'xiaohongshu-assistant': 'deepseek-xiaohongshu',
         'coze-operation-assistant': 'coze-operation-assistant',
+        'menu-price-extractor': 'coze-menu-price-extractor',
       };
       return modelMap[botId] || 'coze';
     };
@@ -191,10 +200,12 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center space-x-2 mb-3">
-        <Bot className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+      <div className="flex items-center mb-3 pl-2.5">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-700 mr-3">
+          <Bot className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+        </div>
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          智能助手
+          外卖助手
         </h3>
       </div>
 
@@ -237,7 +248,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            更多智能助手即将上线...
+            更多外卖助手即将上线...
           </p>
         </div>
       </div>

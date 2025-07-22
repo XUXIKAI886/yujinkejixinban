@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Message } from '@/types';
 import { useChat } from '@/hooks/useChat';
-import { Copy, Check, User, Bot, RotateCcw } from 'lucide-react';
+import { Copy, Check, User, Bot, RotateCcw, Eye } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { SVGPreviewModal } from './SVGPreviewModal';
+import { containsSVG, extractSVG } from '@/lib/svgUtils';
 
 interface MessageBubbleProps {
   message: Message;
@@ -15,8 +17,12 @@ interface MessageBubbleProps {
 
 export function MessageBubble({ message, isLastMessage = false }: MessageBubbleProps) {
   const [copied, setCopied] = useState(false);
+  const [showSVGPreview, setShowSVGPreview] = useState(false);
   const isUser = message.role === 'user';
   const { regenerateLastMessage } = useChat();
+
+  const hasSVG = !isUser && containsSVG(message.content);
+  const svgContent = hasSVG ? extractSVG(message.content) : '';
 
   const handleCopy = async () => {
     try {
@@ -85,6 +91,19 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
             </span>
 
             <div className="flex items-center space-x-1">
+              {/* SVG预览按钮 - 只在包含SVG的AI消息上显示 */}
+              {hasSVG && !message.isStreaming && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-pink-100 dark:hover:bg-pink-900/30 rounded-md"
+                  onClick={() => setShowSVGPreview(true)}
+                  title="预览小红书图文"
+                >
+                  <Eye className="h-3.5 w-3.5 text-pink-600 dark:text-pink-400" />
+                </Button>
+              )}
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -115,6 +134,15 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
           </div>
         </div>
       </div>
+
+      {/* SVG预览模态框 */}
+      {hasSVG && (
+        <SVGPreviewModal
+          svgContent={svgContent}
+          isOpen={showSVGPreview}
+          onClose={() => setShowSVGPreview(false)}
+        />
+      )}
     </div>
   );
 }

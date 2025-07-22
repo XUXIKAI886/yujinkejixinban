@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useChatStore } from '@/lib/store';
-import { callGeminiAPIStream, callCozeAPIStream } from '@/lib/api';
+import { callGeminiAPIStream, callCozeAPIStream, callDeepSeekAPIStream } from '@/lib/api';
 import { getModelById } from '@/config/models';
 
 export function useChat() {
@@ -50,49 +50,98 @@ export function useChat() {
       // 获取当前模型配置
       const currentModel = getModelById(selectedModelId);
       const isCozeModel = currentModel?.provider === 'coze';
+      const isDeepSeekModel = currentModel?.provider === 'deepseek';
 
       // 根据模型类型选择API调用方式
-      const apiCall = isCozeModel ? callCozeAPIStream : callGeminiAPIStream;
+      let apiCall;
+      if (isCozeModel) {
+        apiCall = callCozeAPIStream;
+      } else if (isDeepSeekModel) {
+        apiCall = callDeepSeekAPIStream;
+      } else {
+        apiCall = callGeminiAPIStream;
+      }
 
       // 调用API获取流式响应
-      await apiCall(
-        messages,
-        selectedModelId,
-        // onChunk: 更新消息内容
-        (chunk: string) => {
-          console.log('🎯 useChat收到chunk:', chunk);
-          console.log('🎯 更新消息ID:', aiMessageId, '会话ID:', sessionId);
-          updateMessage(sessionId, aiMessageId, {
-            content: chunk,
-            isStreaming: true
-          });
-          console.log('🎯 消息更新完成');
-        },
-        // onComplete: 完成流式响应
-        () => {
-          updateMessage(sessionId, aiMessageId, {
-            isStreaming: false
-          });
-          setStreamingMessageId(null);
-          setLoading(false);
-        },
-        // onError: 处理错误
-        (error: Error) => {
-          console.error('聊天错误:', error);
-          setError(error.message);
+      if (isDeepSeekModel) {
+        // DeepSeek API不支持文件上传，只传递基本参数
+        await apiCall(
+          messages,
+          selectedModelId,
+          // onChunk: 更新消息内容
+          (chunk: string) => {
+            console.log('🎯 useChat收到chunk:', chunk);
+            console.log('🎯 更新消息ID:', aiMessageId, '会话ID:', sessionId);
+            updateMessage(sessionId, aiMessageId, {
+              content: chunk,
+              isStreaming: true
+            });
+            console.log('🎯 消息更新完成');
+          },
+          // onComplete: 完成流式响应
+          () => {
+            updateMessage(sessionId, aiMessageId, {
+              isStreaming: false
+            });
+            setStreamingMessageId(null);
+            setLoading(false);
+          },
+          // onError: 处理错误
+          (error: Error) => {
+            console.error('聊天错误:', error);
+            setError(error.message);
 
-          // 更新消息显示错误
-          updateMessage(sessionId, aiMessageId, {
-            content: `抱歉，发生了错误: ${error.message}`,
-            isStreaming: false
-          });
+            // 更新消息显示错误
+            updateMessage(sessionId, aiMessageId, {
+              content: `抱歉，发生了错误: ${error.message}`,
+              isStreaming: false
+            });
 
-          setStreamingMessageId(null);
-          setLoading(false);
-        },
-        // 传递文件参数
-        files
-      );
+            setStreamingMessageId(null);
+            setLoading(false);
+          }
+        );
+      } else {
+        // Coze和Gemini API支持文件上传
+        await apiCall(
+          messages,
+          selectedModelId,
+          // onChunk: 更新消息内容
+          (chunk: string) => {
+            console.log('🎯 useChat收到chunk:', chunk);
+            console.log('🎯 更新消息ID:', aiMessageId, '会话ID:', sessionId);
+            updateMessage(sessionId, aiMessageId, {
+              content: chunk,
+              isStreaming: true
+            });
+            console.log('🎯 消息更新完成');
+          },
+          // onComplete: 完成流式响应
+          () => {
+            updateMessage(sessionId, aiMessageId, {
+              isStreaming: false
+            });
+            setStreamingMessageId(null);
+            setLoading(false);
+          },
+          // onError: 处理错误
+          (error: Error) => {
+            console.error('聊天错误:', error);
+            setError(error.message);
+
+            // 更新消息显示错误
+            updateMessage(sessionId, aiMessageId, {
+              content: `抱歉，发生了错误: ${error.message}`,
+              isStreaming: false
+            });
+
+            setStreamingMessageId(null);
+            setLoading(false);
+          },
+          // 传递文件参数
+          files
+        );
+      }
 
     } catch (error) {
       console.error('发送消息错误:', error);

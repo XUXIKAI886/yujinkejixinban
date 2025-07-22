@@ -17,7 +17,7 @@ export interface ModelConfig {
   max_tokens: number;
   systemPrompt?: string;
   icon?: string;
-  provider?: 'gemini' | 'coze'; // API提供商
+  provider?: 'gemini' | 'coze' | 'deepseek'; // API提供商
 }
 
 // 对话会话类型

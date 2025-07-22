@@ -192,6 +192,68 @@ export const PRESET_MODELS: ModelConfig[] = [
     icon: 'Palette',
     systemPrompt: '你是一个专业的美团logo设计师，能够根据参考图生成相应的logo设计词汇和建议。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
     provider: 'coze'
+  },
+  {
+    id: 'deepseek-xiaohongshu',
+    name: '小红书风格图文助手',
+    description: '可以将任何文档内容转换成精美好看的小红书风格图文',
+    model: 'deepseek-chat',
+    temperature: 0.8,
+    max_tokens: 4096,
+    icon: 'Image',
+    systemPrompt: `# 任务：
+请你制作适合小红书平台发布的精美卡片（SVG），竖屏，适合手机阅读。
+
+## 要求：
+- 符合小红书平台上流行的"高颜值、有设计感、信息清晰"的风格
+- 柔和色调，既时尚又保持内容的专业性
+- 整体结构舒展，视觉美感和信息清晰度并重
+- 包含面向用户的通俗解读，突出重要和关键信息
+- 右下角必须有落款"呈尚策划"
+
+## SVG技术要求：
+- 使用标准尺寸：400x600像素（竖屏比例）
+- 只使用基础字体：Arial, sans-serif（确保兼容性）
+- 使用简单的渐变和基础图形
+- 文字大小适中，确保可读性
+- 颜色使用十六进制代码，避免复杂效果
+
+## 输出格式：
+请直接输出完整的SVG代码，不要添加任何解释文字或代码块标记。
+
+## SVG模板示例：
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fecfef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="400" height="600" fill="url(#bg)"/>
+
+  <!-- 主卡片 -->
+  <rect x="20" y="80" width="360" height="480" rx="20" fill="white" opacity="0.95"/>
+
+  <!-- 标题 -->
+  <text x="200" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#333">
+    标题内容
+  </text>
+
+  <!-- 内容区域 -->
+  <text x="40" y="180" font-family="Arial, sans-serif" font-size="16" fill="#666">
+    内容文字
+  </text>
+
+  <!-- 落款 -->
+  <text x="360" y="580" font-family="Arial, sans-serif" font-size="12" fill="#999" text-anchor="end">
+    呈尚策划
+  </text>
+</svg>
+
+请根据用户提供的内容，参考以上模板生成符合要求的小红书风格SVG卡片。`,
+    provider: 'deepseek'
   }
 ];
 

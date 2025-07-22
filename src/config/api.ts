@@ -37,3 +37,15 @@ export const COZE_ENDPOINTS = {
   RETRIEVE_CHAT: (chatId: string) => `${COZE_CONFIG.baseUrl}/chat/retrieve?chat_id=${chatId}`,
   LIST_MESSAGES: (chatId: string) => `${COZE_CONFIG.baseUrl}/chat/message/list?chat_id=${chatId}`
 };
+
+// DeepSeek API配置
+export const DEEPSEEK_CONFIG = {
+  baseUrl: process.env.NEXT_PUBLIC_DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
+  apiKey: process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY || 'sk-63916ff05d33451e8905948b5dcca49d',
+  timeout: 30000,
+  maxRetries: 3
+};
+
+export const DEEPSEEK_ENDPOINTS = {
+  CHAT: `${DEEPSEEK_CONFIG.baseUrl}/chat/completions`
+};

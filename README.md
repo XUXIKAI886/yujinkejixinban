@@ -156,6 +156,8 @@
 - 🎛️ **状态管理**: 优化的Zustand状态管理
 - 📦 **类型安全**: 完整的TypeScript类型定义
 - 🧹 **API层清理**: 自动清理AI输出中的Markdown语法
+- 🖼️ **SVG预览**: 智能检测SVG内容，支持预览和PNG下载
+- 🎨 **多API支持**: 集成Coze、DeepSeek等多个AI平台
 
 ## 🎯 功能亮点
 
@@ -171,6 +173,8 @@
 | 👁️ 视觉舒适性 | 简约设计，适合长时间使用 | ✅ 已完成 |
 | 🚀 即时切换 | 点击机器人立即进入对话 | ✅ 已完成 |
 | 📦 模块化架构 | 易于扩展的组件化设计 | ✅ 已完成 |
+| 🖼️ SVG预览 | 智能检测SVG内容，支持预览和PNG下载 | 🆕 新增 |
+| 🎨 多API支持 | 支持Coze、DeepSeek等多个AI平台 | 🆕 新增 |
 
 ## �🛠️ 技术栈
 
@@ -237,6 +241,7 @@
 | **美团品牌故事** | ✨ | 品牌文案创作 | 品牌建设、营销推广 | 店铺名+品类生成品牌故事 |
 | **美团点金推广大师** | 🎯 | 推广策略优化 | 美团推广、营销投放 | 6年推广经验，熟悉点金规则 |
 | **美团logo设计** | 🎨 | Logo设计分析 | 品牌设计、视觉优化 | 上传logo图片，生成设计建议 |
+| **小红书风格图文助手** | 🖼️ | 图文内容创作 | 小红书营销、内容创作 | 将文档转换为精美小红书风格图文 |
 
 </div>
 
@@ -382,6 +387,29 @@
   - 营销活动文案创作
   - 品牌差异化定位
 
+#### 🖼️ **小红书风格图文助手**
+- **核心能力**: 将任何文档内容转换成精美好看的小红书风格图文
+- **技术优势**: 基于DeepSeek API的专业内容创作AI模型
+- **服务特色**:
+  - 🎨 符合小红书平台"高颜值、有设计感、信息清晰"的风格
+  - 🌈 柔和色调设计，既时尚又保持内容的专业性
+  - 📱 竖屏设计，适合手机阅读和分享
+  - 💡 包含面向用户的通俗解读和关键信息突出
+  - 🎯 自动生成SVG格式的精美卡片
+  - ✨ 右下角自带"呈尚策划"专业落款
+- **🆕 SVG预览与下载功能**:
+  - 👁️ **智能预览**: 自动检测SVG内容，显示预览按钮
+  - 🖼️ **实时预览**: 模态框中实时显示SVG图像效果
+  - 📥 **PNG下载**: 一键将SVG转换为高清PNG图片
+  - ✅ **内容验证**: 自动验证SVG有效性，提供错误提示
+  - 🎨 **显示优化**: 自动优化SVG以获得最佳显示效果
+- **适用场景**:
+  - 小红书内容营销和推广
+  - 技术内容的可视化呈现
+  - 产品介绍和功能展示
+  - 品牌宣传和形象建设
+  - 社交媒体内容创作
+
 #### � **系统特色**
 - **即将推出**: 更多专业领域的AI机器人
 - **扩展方向**:
@@ -462,6 +490,10 @@ NEXT_PUBLIC_COZE_BASE_URL=https://api.coze.com
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
 NEXT_PUBLIC_GEMINI_BASE_URL=https://generativelanguage.googleapis.com
 
+# DeepSeek API配置 (小红书风格图文助手)
+NEXT_PUBLIC_DEEPSEEK_API_KEY=your_deepseek_api_key_here
+NEXT_PUBLIC_DEEPSEEK_BASE_URL=https://api.deepseek.com
+
 # 应用配置
 NEXT_PUBLIC_APP_NAME=AI机器人平台
 NEXT_PUBLIC_APP_VERSION=2.0.0
@@ -525,6 +557,13 @@ npm run test:coverage # 生成测试覆盖率报告
 2. 登录你的Google账户
 3. 点击 "Create API Key" 创建新的API密钥
 4. 复制生成的API密钥到 `.env.local` 文件
+
+#### DeepSeek API (小红书风格图文助手)
+1. 访问 [DeepSeek平台](https://platform.deepseek.com/)
+2. 注册并登录你的DeepSeek账户
+3. 在API Keys页面创建新的API密钥
+4. 复制生成的API密钥到 `.env.local` 文件
+5. 使用提供的密钥：`sk-63916ff05d33451e8905948b5dcca49d`
 
 #### 其他支持的API (可选)
 - OpenAI API

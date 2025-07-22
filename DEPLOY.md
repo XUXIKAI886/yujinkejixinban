@@ -33,6 +33,8 @@ NEXT_PUBLIC_COZE_API_KEY=你的Coze API密钥
 NEXT_PUBLIC_COZE_BASE_URL=https://api.coze.com
 NEXT_PUBLIC_GEMINI_API_KEY=你的Gemini API密钥（可选）
 NEXT_PUBLIC_GEMINI_BASE_URL=https://generativelanguage.googleapis.com
+NEXT_PUBLIC_DEEPSEEK_API_KEY=你的DeepSeek API密钥
+NEXT_PUBLIC_DEEPSEEK_BASE_URL=https://api.deepseek.com
 ```
 
 ### 3️⃣ **启用GitHub Pages**

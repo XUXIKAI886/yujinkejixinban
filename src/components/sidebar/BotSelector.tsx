@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -20,6 +20,7 @@ const iconMap: Record<string, LucideIcon> = {
   Sparkles,
   Target,
   Palette,
+  Image,
 };
 
 // 图标渲染函数
@@ -125,6 +126,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
     icon: 'Palette',
     botId: '7529356136379219994' // 美团logo设计的Coze Bot ID
+  },
+  {
+    id: 'xiaohongshu-assistant',
+    name: '小红书风格图文助手',
+    description: '可以将任何文档内容转换成精美好看的小红书风格图文',
+    icon: 'Image',
+    botId: 'deepseek-chat' // DeepSeek模型
   }
 ];
 
@@ -157,6 +165,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'meituan-brand-story': 'coze-brand-story',
         'meituan-dianjin-master': 'coze-dianjin-master',
         'meituan-logo-design': 'coze-logo-design',
+        'xiaohongshu-assistant': 'deepseek-xiaohongshu',
       };
       return modelMap[botId] || 'coze';
     };

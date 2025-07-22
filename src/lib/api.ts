@@ -1,5 +1,5 @@
 import { Message, GeminiRequest, GeminiContent } from '@/types';
-import { API_CONFIG, API_ENDPOINTS, COZE_CONFIG, COZE_ENDPOINTS } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS, COZE_CONFIG, COZE_ENDPOINTS, DEEPSEEK_CONFIG, DEEPSEEK_ENDPOINTS } from '@/config/api';
 import { getModelById } from '@/config/models';
 
 // 将OpenAI格式的消息转换为Gemini格式
@@ -161,6 +161,14 @@ function cleanMarkdownSyntax(text: string): string {
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
     // 移除引用语法 > text
     .replace(/^>\s+/gm, '')
+    // 替换列表标记 - 为 ·
+    .replace(/^-\s+/gm, '· ')
+    // 替换列表标记 * 为 ·
+    .replace(/^\*\s+/gm, '· ')
+    // 替换列表标记 + 为 ·
+    .replace(/^\+\s+/gm, '· ')
+    // 替换列表标记 1. 2. 等为 1· 2· 
+    .replace(/^(\d+)\.\s+/gm, '$1· ')
     // 移除水平分割线 --- 或 ***
     .replace(/^[-*]{3,}$/gm, '')
     // 移除表格分隔符 |---|---|
@@ -726,6 +734,264 @@ export async function testCozeAPIConnection(): Promise<boolean> {
     return true;
   } catch (error) {
     console.error('Coze API连接测试失败:', error);
+    return false;
+  }
+}
+
+// ==================== DeepSeek API 相关函数 ====================
+
+// DeepSeek API 请求接口
+interface DeepSeekMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+interface DeepSeekChatRequest {
+  model: string;
+  messages: DeepSeekMessage[];
+  stream: boolean;
+  temperature?: number;
+  max_tokens?: number;
+}
+
+// 将消息转换为DeepSeek格式
+export function convertToDeepSeekFormat(messages: Message[], systemPrompt?: string): DeepSeekMessage[] {
+  const deepSeekMessages: DeepSeekMessage[] = [];
+
+  // 添加系统提示
+  if (systemPrompt) {
+    deepSeekMessages.push({
+      role: 'system',
+      content: systemPrompt
+    });
+  }
+
+  // 转换用户和助手消息
+  messages.forEach(msg => {
+    if (msg.role !== 'system') {
+      deepSeekMessages.push({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content
+      });
+    }
+  });
+
+  return deepSeekMessages;
+}
+
+// 调用DeepSeek API (非流式)
+export async function callDeepSeekAPI(
+  messages: Message[],
+  modelId: string
+): Promise<string> {
+  console.log('🚀 开始DeepSeek非流式API调用');
+  console.log('📝 消息:', messages);
+
+  const model = getModelById(modelId);
+  if (!model) {
+    throw new Error(`未找到模型: ${modelId}`);
+  }
+
+  const deepSeekMessages = convertToDeepSeekFormat(messages, model.systemPrompt);
+  console.log('📋 转换后的消息格式:', deepSeekMessages);
+
+  const requestBody: DeepSeekChatRequest = {
+    model: model.model,
+    messages: deepSeekMessages,
+    stream: false,
+    temperature: model.temperature,
+    max_tokens: model.max_tokens
+  };
+
+  console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));
+
+  try {
+    console.log('🌐 发送请求到:', DEEPSEEK_ENDPOINTS.CHAT);
+    const response = await fetch(DEEPSEEK_ENDPOINTS.CHAT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_CONFIG.apiKey}`,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    console.log('📥 响应状态:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ DeepSeek API Error:', response.status, errorText);
+      throw new Error(`DeepSeek API请求失败: ${response.status} ${response.statusText}\n错误详情: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('📊 响应数据:', data);
+
+    // 解析DeepSeek API响应
+    if (data.choices && data.choices.length > 0) {
+      const choice = data.choices[0];
+      if (choice.message && choice.message.content) {
+        return choice.message.content;
+      }
+    }
+
+    throw new Error('DeepSeek API响应格式不正确');
+  } catch (error) {
+    console.error('❌ DeepSeek API调用错误:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('DeepSeek API调用失败');
+  }
+}
+
+// 流式调用DeepSeek API
+export async function callDeepSeekAPIStream(
+  messages: Message[],
+  modelId: string,
+  onChunk: (chunk: string) => void,
+  onComplete: () => void,
+  onError: (error: Error) => void
+): Promise<void> {
+  console.log('🚀 开始DeepSeek流式API调用');
+  console.log('📝 消息:', messages);
+
+  const model = getModelById(modelId);
+  if (!model) {
+    onError(new Error(`未找到模型: ${modelId}`));
+    return;
+  }
+
+  const deepSeekMessages = convertToDeepSeekFormat(messages, model.systemPrompt);
+  console.log('📋 转换后的消息格式:', deepSeekMessages);
+
+  const requestBody: DeepSeekChatRequest = {
+    model: model.model,
+    messages: deepSeekMessages,
+    stream: true,
+    temperature: model.temperature,
+    max_tokens: model.max_tokens
+  };
+
+  console.log('📤 请求体:', JSON.stringify(requestBody, null, 2));
+
+  try {
+    console.log('🌐 发送请求到:', DEEPSEEK_ENDPOINTS.CHAT);
+    const response = await fetch(DEEPSEEK_ENDPOINTS.CHAT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_CONFIG.apiKey}`,
+        'Accept': 'text/event-stream'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    console.log('📥 响应状态:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ DeepSeek Stream API Error:', response.status, errorText);
+      throw new Error(`DeepSeek流式API请求失败: ${response.status} ${response.statusText}\n错误详情: ${errorText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('无法获取响应流');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let accumulatedContent = ''; // 累积的内容
+
+    console.log('📡 开始读取流式响应...');
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          console.log('✅ 流式响应读取完成');
+          break;
+        }
+
+        const chunk = decoder.decode(value, { stream: true });
+        console.log('📦 收到数据块:', chunk);
+        buffer += chunk;
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.trim() === '') continue;
+
+          console.log('📄 处理行:', line);
+
+          // 处理数据行
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6).trim();
+            console.log('📋 处理数据行，数据长度:', data.length);
+
+            if (data === '[DONE]') {
+              console.log('🏁 收到完成信号');
+              onComplete();
+              return;
+            }
+
+            try {
+              const parsed = JSON.parse(data);
+              console.log('📊 解析的数据:', parsed);
+
+              // 处理DeepSeek API响应格式
+              if (parsed.choices && parsed.choices.length > 0) {
+                const choice = parsed.choices[0];
+                if (choice.delta && choice.delta.content) {
+                  const content = choice.delta.content;
+                  console.log('📝 收到delta内容:', content);
+
+                  // 累积内容
+                  accumulatedContent += content;
+                  console.log('📝 累积内容:', accumulatedContent);
+                  console.log('🔄 调用onChunk回调...');
+                  onChunk(accumulatedContent);
+                }
+              }
+            } catch (parseError) {
+              console.warn('⚠️ 解析SSE数据失败:', parseError, 'Data:', data);
+              // 继续处理，不中断流
+            }
+          }
+        }
+      }
+
+      console.log('🏁 流式响应处理完成');
+      onComplete();
+    } finally {
+      reader.releaseLock();
+    }
+  } catch (error) {
+    console.error('❌ DeepSeek流式API调用错误:', error);
+    onError(error instanceof Error ? error : new Error('未知错误'));
+  }
+}
+
+// 测试DeepSeek API连接
+export async function testDeepSeekAPIConnection(): Promise<boolean> {
+  try {
+    const testMessages: Message[] = [
+      {
+        id: 'test',
+        role: 'user',
+        content: '你好',
+        timestamp: Date.now()
+      }
+    ];
+
+    await callDeepSeekAPI(testMessages, 'deepseek-xiaohongshu');
+    return true;
+  } catch (error) {
+    console.error('DeepSeek API连接测试失败:', error);
     return false;
   }
 }

@@ -70,6 +70,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Search',
     systemPrompt: '你是一个专业的关键词优化助手，专门为菜品名称生成优化的关键词。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用关键词优化助手！
+
+数据获取指南：
+1. 登录美团外卖商家版
+2. 进入"商品列表"页面
+3. 点击"下载商品"
+4. 复制所有商品名称`,
     provider: 'coze' // 标识这是Coze提供商
   },
   {
@@ -81,6 +88,12 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Headphones',
     systemPrompt: '你是一个专业的美团客服助手，为用户提供全方位的客户服务支持。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团全能客服助手！
+
+常见问题示例：
+1. "为什么没有多少单？"
+2. "做了这么久为什么一直看不到效果？"
+3. "点金充50元是每天都充吗，如果没有效果怎么办？"`,
     provider: 'coze' // 标识这是Coze提供商
   },
   {
@@ -92,6 +105,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Tags',
     systemPrompt: '你是一个专业的美团分类栏描述助手，专门为店铺生成分类标签和优化商品展示效果。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用分类栏描述优化助手！
+
+示例分类结构：
+特色卤粉
+人气套餐
+卤汁拌饭
+优惠套餐`,
     provider: 'coze' // 标识这是Coze提供商
   },
   {
@@ -103,6 +123,18 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Package',
     systemPrompt: '你是一个专业的外卖套餐搭配助手，专门为餐厅设计套餐组合并生成优化的关键词。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用外卖套餐搭配助手！
+
+示例菜品结构：
+【主食类】
+特色大肉粉    ¥17.88
+猪脚粉        ¥20.88
+招牌肠旺粉    ¥16.88
+
+【配菜类】
+卤蛋          ¥3.00
+豆腐          ¥4.00
+血旺          ¥4.00`,
     provider: 'coze'
   },
   {
@@ -114,6 +146,14 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'MessageCircle',
     systemPrompt: '你是一个专业的美团评价回复助手，专门帮助商家回复顾客评价，提升店铺好评率。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团评价解释助手！
+
+评价内容模板：
+【好评内容】
+[请粘贴好评内容...]
+
+【差评内容】
+[请粘贴差评内容...]`,
     provider: 'coze'
   },
   {
@@ -125,6 +165,11 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Star',
     systemPrompt: '你是一个专业的外卖好评生成助手，专门创作个性化的评价内容，增加店铺真实性。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用补单专用外卖好评！
+
+示例请求：
+请帮我写3个关于麻辣烫店铺的好评
+特色：食材新鲜，汤底鲜美，服务热情`,
     provider: 'coze'
   },
   {
@@ -136,6 +181,12 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'BarChart3',
     systemPrompt: '你是一个专业的美团店铺数据分析师，专门分析店铺数据并提供经营策略优化建议。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），使用简单的文本格式如"运营总况："、"1. "、"2. "等进行排版。',
+    welcomeMessage: `欢迎使用美团店铺分解析助手！
+
+数据获取指南：
+1. 登录美团商家版后台
+2. 找到"店铺分"板块
+3. 复制完整的数据内容`,
     provider: 'coze'
   },
   {
@@ -147,6 +198,18 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'TrendingUp',
     systemPrompt: '你是一个专业的外卖数据分析师，专门分析周报数据并提供经营决策指导。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），使用简单的文本格式如"数据总结："、"1. "、"2. "等进行排版。',
+    welcomeMessage: `欢迎使用外卖数据周报分析助手！
+
+示例数据：
+2024-12-11 至 2024-12-17
+店铺名：老王烤肉店
+店铺营业额：671元
+实付单均价：22.55元
+曝光人数：4,832人
+入店人数：353人
+下单人数：25人
+入店转化率：7.31%
+下单转化率：7.08%`,
     provider: 'coze'
   },
   {
@@ -158,6 +221,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'FileText',
     systemPrompt: '你是一个专业的菜品描述撰写师，专门根据菜品名称创作吸引人的菜品描述。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用外卖菜品描述助手！
+
+数据获取步骤：
+1. 登录美团外卖商家版
+2. 进入"商品列表"页面
+3. 点击"下载商品"
+4. 复制所有商品名称`,
     provider: 'coze'
   },
   {
@@ -180,6 +250,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Target',
     systemPrompt: '你是一个拥有6年推广经验的美团点金推广大师，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团点金推广大师！
+
+示例问题1：
+我的店铺是做盖浇饭的，我该如何给这家店铺做点金推广？
+
+示例问题2：
+我是做米线的，定向如何设置？`,
     provider: 'coze'
   },
   {
@@ -191,6 +268,9 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Palette',
     systemPrompt: '你是一个专业的美团logo设计师，能够根据参考图生成相应的logo设计词汇和建议。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团logo设计
+
+请直接上传参考图，我将立即为您创造独特而专业的logo文案！`,
     provider: 'coze'
   },
   {
@@ -253,6 +333,9 @@ export const PRESET_MODELS: ModelConfig[] = [
 </svg>
 
 请根据用户提供的内容，参考以上模板生成符合要求的小红书风格SVG卡片。`,
+    welcomeMessage: `欢迎使用小红书图文风格
+
+请直接上传文字内容，我将立即为您生成精美好看的小红书图文风格！`,
     provider: 'deepseek'
   }
 ];

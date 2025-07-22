@@ -18,6 +18,7 @@ export interface ModelConfig {
   systemPrompt?: string;
   icon?: string;
   provider?: 'gemini' | 'coze' | 'deepseek'; // API提供商
+  welcomeMessage?: string; // 欢迎语
 }
 
 // 对话会话类型

@@ -1,16 +1,36 @@
 'use client';
 
-import { Message } from '@/types';
+import { Message, ModelConfig } from '@/types';
 import { MessageBubble } from './MessageBubble';
 import { LoadingMessage } from './LoadingMessage';
 
 interface MessageListProps {
   messages: Message[];
   isLoading: boolean;
+  currentModel?: ModelConfig;
 }
 
-export function MessageList({ messages, isLoading }: MessageListProps) {
+export function MessageList({ messages, isLoading, currentModel }: MessageListProps) {
   if (messages.length === 0 && !isLoading) {
+    // 如果当前模型有欢迎语，显示欢迎语
+    if (currentModel?.welcomeMessage) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center max-w-2xl mx-auto px-4">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+              {currentModel.name}
+            </h3>
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-6 text-left">
+              <pre className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">
+                {currentModel.welcomeMessage}
+              </pre>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 默认的空状态显示
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center max-w-md mx-auto px-4">

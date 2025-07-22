@@ -239,6 +239,9 @@ export const PRESET_MODELS: ModelConfig[] = [
     max_tokens: 4096,
     icon: 'Sparkles',
     systemPrompt: '你是一个专业的品牌故事撰写师，专门为美团店铺创作品牌故事文案。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团品牌故事
+
+输入店铺名+经营品类 自动生成品牌故事文案`,
     provider: 'coze'
   },
   {

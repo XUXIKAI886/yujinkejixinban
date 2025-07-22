@@ -340,6 +340,21 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 请直接上传文字内容，我将立即为您生成精美好看的小红书图文风格！`,
     provider: 'deepseek'
+  },
+  {
+    id: 'coze-operation-assistant',
+    name: '美团外卖代运营助手',
+    description: '用简洁明了的语言向商家解释各项优化的内容、目的和好处',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Settings',
+    systemPrompt: '你是一个专业的美团外卖代运营助手，专门用简洁明了的语言向商家解释各项优化的内容、目的和好处。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团外卖代运营助手
+
+示例数据：
+"分类栏优化已上线"`,
+    provider: 'coze'
   }
 ];
 

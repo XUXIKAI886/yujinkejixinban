@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -21,6 +21,7 @@ const iconMap: Record<string, LucideIcon> = {
   Target,
   Palette,
   Image,
+  Settings,
 };
 
 // 图标渲染函数
@@ -133,6 +134,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '可以将任何文档内容转换成精美好看的小红书风格图文',
     icon: 'Image',
     botId: 'deepseek-chat' // DeepSeek模型
+  },
+  {
+    id: 'coze-operation-assistant',
+    name: '美团外卖代运营助手',
+    description: '用简洁明了的语言向商家解释各项优化的内容、目的和好处',
+    icon: 'Settings',
+    botId: '7461202295062396954' // 美团外卖代运营助手的Coze Bot ID
   }
 ];
 
@@ -166,6 +174,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'meituan-dianjin-master': 'coze-dianjin-master',
         'meituan-logo-design': 'coze-logo-design',
         'xiaohongshu-assistant': 'deepseek-xiaohongshu',
+        'coze-operation-assistant': 'coze-operation-assistant',
       };
       return modelMap[botId] || 'coze';
     };

@@ -198,6 +198,7 @@ function getBotIdByModel(modelId: string): string {
     'coze-brand-story': '7488662536091811877',       // 美团品牌故事
     'coze-dianjin-master': '7461438144458850340',    // 美团点金推广大师
     'coze-logo-design': '7529356136379219994',       // 美团logo设计
+    'coze-operation-assistant': '7461202295062396954', // 美团外卖代运营助手
   };
 
   return botIdMap[modelId] || COZE_CONFIG.botId; // 默认使用配置中的Bot ID

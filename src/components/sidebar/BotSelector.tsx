@@ -150,6 +150,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '精准提取图中的菜品名称和价格',
     icon: 'ScanLine',
     botId: '7469300056269602842' // 提取菜名和价格的Coze Bot ID
+  },
+  {
+    id: 'similar-script-generator',
+    name: '相似话术生成助手',
+    description: '擅长剖析各类话术，精准把握其核心要点',
+    icon: 'MessageSquare',
+    botId: '7498302515360825407' // 相似话术生成助手的Coze Bot ID
   }
 ];
 
@@ -185,6 +192,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'xiaohongshu-assistant': 'deepseek-xiaohongshu',
         'coze-operation-assistant': 'coze-operation-assistant',
         'menu-price-extractor': 'coze-menu-price-extractor',
+        'similar-script-generator': 'coze-similar-script',
       };
       return modelMap[botId] || 'coze';
     };

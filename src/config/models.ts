@@ -369,6 +369,20 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 请直接上传菜单图，我能精准提取图中的菜品名称和价格`,
     provider: 'coze'
+  },
+  {
+    id: 'coze-similar-script',
+    name: '相似话术生成助手',
+    description: '擅长剖析各类话术，精准把握其核心要点',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'MessageSquare',
+    systemPrompt: '你是一个专业的话术分析和生成助手，擅长剖析各类话术的核心要点，并生成相似风格的话术内容。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用相似话术生成助手！
+
+请直接发送话术，我会给您生成三种不一样的话术内容`,
+    provider: 'coze'
   }
 ];
 

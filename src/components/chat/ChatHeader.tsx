@@ -2,12 +2,10 @@
 
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { WeatherWidget } from '@/components/ui/weather-widget';
-import { SimpleTipsTicker } from '@/components/ui/tips-ticker';
 import { ChatSession } from '@/types';
 import { getModelById } from '@/config/models';
 import { useChatStore } from '@/lib/store';
-import { RotateCcw, Bot, PenTool, BarChart3, Code, Globe, GraduationCap, Search, ChefHat, Headphones, Tags, Package, MessageCircle, Star, TrendingUp, FileText, Sparkles, Target, Palette, Settings, LucideIcon } from 'lucide-react';
+import { RotateCcw, Bot, PenTool, BarChart3, Code, Globe, GraduationCap, Search, ChefHat, Headphones, Tags, Package, MessageCircle, Star, TrendingUp, FileText, Sparkles, Target, Palette, Settings, ScanLine, MessageSquare, LucideIcon } from 'lucide-react';
 
 // 图标映射 - 与BotSelector保持一致
 const iconMap: Record<string, LucideIcon> = {
@@ -26,6 +24,8 @@ const iconMap: Record<string, LucideIcon> = {
   Target,
   Palette,
   Settings,
+  ScanLine,
+  MessageSquare,
   // 其他可能用到的图标
   Bot,
   PenTool,
@@ -75,13 +75,8 @@ export function ChatHeader({ session }: ChatHeaderProps) {
         </div>
       </div>
 
-      {/* 运营小贴士 - 居中显示 */}
-      <div className="hidden md:block flex-1 px-8">
-        <SimpleTipsTicker />
-      </div>
 
       <div className="flex items-center space-x-2">
-        <WeatherWidget />
         <ThemeToggle />
         <Button
           variant="ghost"

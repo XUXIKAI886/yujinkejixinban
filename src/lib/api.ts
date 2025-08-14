@@ -200,6 +200,7 @@ function getBotIdByModel(modelId: string): string {
     'coze-logo-design': '7529356136379219994',       // 美团logo设计
     'coze-operation-assistant': '7461202295062396954', // 美团外卖代运营助手
     'coze-menu-price-extractor': '7469300056269602842', // 提取菜名和价格
+    'coze-similar-script': '7498302515360825407',    // 相似话术生成助手
   };
 
   return botIdMap[modelId] || COZE_CONFIG.botId; // 默认使用配置中的Bot ID

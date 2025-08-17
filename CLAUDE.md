@@ -48,6 +48,14 @@ deploy.sh
 - **Markdown渲染**: react-markdown + rehype-highlight
 - **UI组件**: Radix UI + shadcn/ui
 
+### 多API架构设计
+项目采用多API提供商架构，支持三种API服务：
+- **Gemini API**: 通用AI对话服务（通过 Google AI Studio）
+- **Coze API**: 专业机器人服务（15个专业Bot）
+- **DeepSeek API**: 小红书图文生成专用服务
+
+每个机器人配置中的 `provider` 字段决定API路由，API调用流程在 `src/lib/api.ts` 中统一处理，支持流式和非流式响应。
+
 ### 项目结构关键模块
 
 #### 1. 机器人配置模块 (`src/config/models.ts`)
@@ -105,11 +113,21 @@ src/components/
 - 等等...
 
 #### API 调用流程
-1. **用户输入** → MessageInput 组件
-2. **模型判断** → 根据 provider 字段路由到不同 API
-3. **API 调用** → `src/lib/api.ts` 统一处理
-4. **流式响应** → 实时更新消息内容
-5. **状态更新** → Zustand store 持久化
+1. **用户输入** → MessageInput 组件 (`src/components/chat/MessageInput.tsx`)
+2. **模型判断** → 根据 `provider` 字段路由到对应 API:
+   - `gemini`: 调用 `callGeminiAPIStream()`
+   - `coze`: 调用 `callCozeAPIStream()` 
+   - `deepseek`: 调用 `callDeepSeekAPIStream()`
+3. **API 调用** → `src/lib/api.ts` 统一处理（支持文件上传）
+4. **流式响应** → 实时更新消息内容（打字机效果）
+5. **状态更新** → Zustand store 自动持久化到 localStorage
+
+#### 关键文件关系
+- `src/types/index.ts`: 核心类型定义
+- `src/config/models.ts`: 15个机器人配置
+- `src/config/api.ts`: API端点和配置
+- `src/lib/store.ts`: Zustand状态管理
+- `src/lib/api.ts`: API调用核心逻辑（1000+行）
 
 ## 开发规范
 
@@ -206,3 +224,10 @@ NEXT_PUBLIC_COZE_BOT_ID=7432143655349338139   # 默认 Bot
 - 组件命名使用 PascalCase
 - 函数和变量使用 camelCase
 - 常量使用 UPPER_SNAKE_CASE
+
+### 开发注意事项
+- 新增机器人时必须更新 `src/config/models.ts` 和 API映射
+- 所有API调用都要通过 `src/lib/api.ts` 统一处理
+- 流式响应处理使用 Server-Sent Events (SSE)
+- 文件上传仅支持 Coze API (图片格式)
+- Markdown 语法会被自动清理为纯文本（针对Coze输出）

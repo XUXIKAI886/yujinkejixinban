@@ -157,6 +157,41 @@ const COZE_BOTS: CozeBot[] = [
     description: '擅长剖析各类话术，精准把握其核心要点',
     icon: 'MessageSquare',
     botId: '7498302515360825407' // 相似话术生成助手的Coze Bot ID
+  },
+  {
+    id: 'eleme-category-description',
+    name: '饿了么分类栏描述',
+    description: '专注于饿了么分类栏描述生成',
+    icon: 'Tags',
+    botId: '7444769224897085503' // 饿了么分类栏描述的Coze Bot ID
+  },
+  {
+    id: 'eleme-keyword-optimizer',
+    name: '饿了么关键词优化',
+    description: '专注于为饿了么平台产品提供关键词优化服务',
+    icon: 'Search',
+    botId: '7498302515360825407' // 饿了么关键词优化的Coze Bot ID
+  },
+  {
+    id: 'eleme-dish-description',
+    name: '饿了么菜品描述',
+    description: '专注于饿了么撰写吸引人的菜品描述',
+    icon: 'FileText',
+    botId: '7432146500114792487' // 饿了么菜品描述的Coze Bot ID
+  },
+  {
+    id: 'eleme-review-assistant',
+    name: '饿了么评价解释助手',
+    description: '专注于饿了么回复顾客评价，提升店铺好评率',
+    icon: 'MessageCircle',
+    botId: '7434355486700568591' // 饿了么评价解释助手的Coze Bot ID
+  },
+  {
+    id: 'eleme-meal-combo',
+    name: '饿了么套餐搭配助手',
+    description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
+    icon: 'Package',
+    botId: '7540548019217776690' // 饿了么套餐搭配助手的Coze Bot ID
   }
 ];
 
@@ -193,6 +228,11 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'coze-operation-assistant': 'coze-operation-assistant',
         'menu-price-extractor': 'coze-menu-price-extractor',
         'similar-script-generator': 'coze-similar-script',
+        'eleme-category-description': 'eleme-category-description',
+        'eleme-keyword-optimizer': 'eleme-keyword-optimizer',
+        'eleme-dish-description': 'eleme-dish-description',
+        'eleme-review-assistant': 'eleme-review-assistant',
+        'eleme-meal-combo': 'eleme-meal-combo',
       };
       return modelMap[botId] || 'coze';
     };

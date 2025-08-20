@@ -383,6 +383,102 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 请直接发送话术，我会给您生成三种不一样的话术内容`,
     provider: 'coze'
+  },
+  {
+    id: 'eleme-category-description',
+    name: '饿了么分类栏描述',
+    description: '专注于饿了么分类栏描述生成',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Tags',
+    systemPrompt: '你是一个专业的饿了么分类栏描述助手，专门为饿了么店铺生成分类标签和优化商品展示效果。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么分类栏描述助手！
+
+示例分类结构：
+特色卤粉
+人气套餐
+卤汁拌饭
+优惠套餐`,
+    provider: 'coze'
+  },
+  {
+    id: 'eleme-keyword-optimizer',
+    name: '饿了么关键词优化',
+    description: '专注于为饿了么平台产品提供关键词优化服务',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Search',
+    systemPrompt: '你是一个专业的饿了么关键词优化助手，专门为饿了么平台产品提供关键词优化服务。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么关键词优化助手！
+
+数据获取指南：
+1. 登录饿了么商家版
+2. 进入"商品列表"页面
+3. 点击"下载商品"
+4. 复制所有商品名称`,
+    provider: 'coze'
+  },
+  {
+    id: 'eleme-dish-description',
+    name: '饿了么菜品描述',
+    description: '专注于饿了么撰写吸引人的菜品描述',
+    model: 'coze-bot',
+    temperature: 0.8,
+    max_tokens: 4096,
+    icon: 'FileText',
+    systemPrompt: '你是一个专业的饿了么菜品描述撰写师，专门为饿了么平台撰写吸引人的菜品描述。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么菜品描述助手！
+
+数据获取步骤：
+1. 登录饿了么商家版
+2. 进入"商品列表"页面
+3. 点击"下载商品"
+4. 复制所有商品名称`,
+    provider: 'coze'
+  },
+  {
+    id: 'eleme-review-assistant',
+    name: '饿了么评价解释助手',
+    description: '专注于饿了么回复顾客评价，提升店铺好评率',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'MessageCircle',
+    systemPrompt: '你是一个专业的饿了么评价回复助手，专门帮助饿了么商家回复顾客评价，提升店铺好评率。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么评价解释助手！
+
+评价内容模板：
+【好评内容】
+[请粘贴好评内容...]
+
+【差评内容】
+[请粘贴差评内容...]`,
+    provider: 'coze'
+  },
+  {
+    id: 'eleme-meal-combo',
+    name: '饿了么套餐搭配助手',
+    description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Package',
+    systemPrompt: '你是一个专业的饿了么套餐搭配助手，专门为饿了么餐厅设计套餐组合并生成优化的关键词。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么套餐搭配助手！
+
+示例菜品结构：
+【主食类】
+特色大肉粉    ¥17.88
+猪脚粉        ¥20.88
+招牌肠旺粉    ¥16.88
+
+【配菜类】
+卤蛋          ¥3.00
+豆腐          ¥4.00
+血旺          ¥4.00`,
+    provider: 'coze'
   }
 ];
 

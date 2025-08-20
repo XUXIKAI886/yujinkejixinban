@@ -254,7 +254,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
           <Bot className="h-4 w-4 text-gray-600 dark:text-gray-400" />
         </div>
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          外卖助手
+          AI助手专区
         </h3>
       </div>
 
@@ -297,7 +297,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            更多外卖助手即将上线...
+            已集成20个专业AI助手
           </p>
         </div>
       </div>

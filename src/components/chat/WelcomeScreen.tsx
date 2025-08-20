@@ -8,18 +8,18 @@ export function WelcomeScreen() {
   const features = [
     {
       icon: <Bot className="h-6 w-6" />,
-      title: '美团业务专家',
-      description: '15个专业AI助手，覆盖外卖经营全流程'
+      title: '双平台业务专家',
+      description: '20个专业AI助手，覆盖美团外卖+饿了么双平台全流程'
     },
     {
       icon: <Search className="h-6 w-6" />,
       title: '智能内容生成',
-      description: '关键词优化、菜品描述、品牌故事一键生成'
+      description: '关键词优化、菜品描述、品牌故事、套餐搭配一键生成'
     },
     {
       icon: <Zap className="h-6 w-6" />,
       title: '数据分析洞察',
-      description: '店铺分析、周报解读、评价管理智能化'
+      description: '店铺分析、周报解读、评价管理、运营策略智能化'
     }
   ];
 

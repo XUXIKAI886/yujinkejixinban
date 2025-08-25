@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings, ScanLine, MessageSquare } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings, ScanLine, MessageSquare, Calendar } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -24,6 +24,7 @@ const iconMap: Record<string, LucideIcon> = {
   Settings,
   ScanLine,
   MessageSquare,
+  Calendar,
 };
 
 // 图标渲染函数
@@ -192,6 +193,20 @@ const COZE_BOTS: CozeBot[] = [
     description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
     icon: 'Package',
     botId: '7540548019217776690' // 饿了么套餐搭配助手的Coze Bot ID
+  },
+  {
+    id: 'eleme-weekly-report',
+    name: '饿了么周报',
+    description: '专注于为饿了么外卖店铺生成内容详实的运营周报',
+    icon: 'Calendar',
+    botId: '7541341177451446287' // 饿了么周报的Coze Bot ID
+  },
+  {
+    id: 'eleme-daily-report',
+    name: '饿了么日报',
+    description: '专注于为饿了么外卖店铺生成内容详实的运营日报简报',
+    icon: 'FileText',
+    botId: '7541990904928862260' // 饿了么日报的Coze Bot ID
   }
 ];
 
@@ -233,6 +248,8 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'eleme-dish-description': 'eleme-dish-description',
         'eleme-review-assistant': 'eleme-review-assistant',
         'eleme-meal-combo': 'eleme-meal-combo',
+        'eleme-weekly-report': 'eleme-weekly-report',
+        'eleme-daily-report': 'eleme-daily-report',
       };
       return modelMap[botId] || 'coze';
     };
@@ -297,7 +314,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            已集成20个专业AI助手
+            已集成22个专业AI助手
           </p>
         </div>
       </div>

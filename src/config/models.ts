@@ -479,6 +479,55 @@ export const PRESET_MODELS: ModelConfig[] = [
 豆腐          ¥4.00
 血旺          ¥4.00`,
     provider: 'coze'
+  },
+  {
+    id: 'eleme-weekly-report',
+    name: '饿了么周报',
+    description: '专注于为饿了么外卖店铺生成内容详实的运营周报',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'Calendar',
+    systemPrompt: '你是一个专业的饿了么运营周报生成助手，专门为饿了么外卖店铺生成内容详实的运营周报。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么周报生成助手！
+
+数据获取指南：
+1. 登录饿了么商家版
+2. 进入"数据中心"
+3. 查看"周报数据"模块
+4. 复制相关运营数据
+
+周报内容将包含：
+• 订单量统计与分析
+• 销售额变化趋势
+• 用户评价汇总
+• 运营建议与改进方案`,
+    provider: 'coze'
+  },
+  {
+    id: 'eleme-daily-report',
+    name: '饿了么日报',
+    description: '专注于为饿了么外卖店铺生成内容详实的运营日报简报',
+    model: 'coze-bot',
+    temperature: 0.7,
+    max_tokens: 4096,
+    icon: 'FileText',
+    systemPrompt: '你是一个专业的饿了么运营日报生成助手，专门为饿了么外卖店铺生成内容详实的运营日报简报。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用饿了么日报生成助手！
+
+数据获取指南：
+1. 登录饿了么商家版
+2. 进入"数据中心"
+3. 查看"今日数据"模块
+4. 复制相关运营数据
+
+日报内容将包含：
+• 当日订单统计
+• 销售额概览
+• 热门商品排行
+• 客户反馈摘要
+• 明日运营建议`,
+    provider: 'coze'
   }
 ];
 

@@ -206,6 +206,8 @@ function getBotIdByModel(modelId: string): string {
     'eleme-dish-description': '7432146500114792487',     // 饿了么菜品描述
     'eleme-review-assistant': '7434355486700568591',     // 饿了么评价解释助手
     'eleme-meal-combo': '7540548019217776690',           // 饿了么套餐搭配助手
+    'eleme-weekly-report': '7541341177451446287',        // 饿了么周报
+    'eleme-daily-report': '7541990904928862260',         // 饿了么日报
   };
 
   return botIdMap[modelId] || COZE_CONFIG.botId; // 默认使用配置中的Bot ID

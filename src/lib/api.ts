@@ -185,6 +185,8 @@ function cleanMarkdownSyntax(text: string): string {
 
 // 根据模型ID获取对应的Bot ID
 function getBotIdByModel(modelId: string): string {
+  console.log('🔍 getBotIdByModel 调用，输入modelId:', modelId);
+
   const botIdMap: Record<string, string> = {
     'coze': '7432143655349338139',                    // 关键词优化助手
     'coze-meituan': '7450790638439907355',           // 美团全能客服
@@ -210,7 +212,10 @@ function getBotIdByModel(modelId: string): string {
     'eleme-daily-report': '7541990904928862260',         // 饿了么日报
   };
 
-  return botIdMap[modelId] || COZE_CONFIG.botId; // 默认使用配置中的Bot ID
+  const resultBotId = botIdMap[modelId] || COZE_CONFIG.botId;
+  console.log('🎯 getBotIdByModel 结果，modelId:', modelId, '-> botId:', resultBotId);
+
+  return resultBotId; // 默认使用配置中的Bot ID
 }
 
 // Coze API 请求接口

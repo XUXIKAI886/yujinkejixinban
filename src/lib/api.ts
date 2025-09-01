@@ -202,7 +202,7 @@ function getBotIdByModel(modelId: string): string {
     'coze-menu-price-extractor': '7469300056269602842', // 提取菜名和价格
     'coze-similar-script': '7498302515360825407',    // 相似话术生成助手
     'eleme-category-description': '7444769224897085503', // 饿了么分类栏描述
-    'eleme-keyword-optimizer': '7498302515360825407',    // 饿了么关键词优化
+    'eleme-keyword-optimizer': '7540539099225129000',    // 饿了么关键词优化
     'eleme-dish-description': '7432146500114792487',     // 饿了么菜品描述
     'eleme-review-assistant': '7434355486700568591',     // 饿了么评价解释助手
     'eleme-meal-combo': '7540548019217776690',           // 饿了么套餐搭配助手

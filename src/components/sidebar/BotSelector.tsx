@@ -171,7 +171,7 @@ const COZE_BOTS: CozeBot[] = [
     name: '饿了么关键词优化',
     description: '专注于为饿了么平台产品提供关键词优化服务',
     icon: 'Search',
-    botId: '7498302515360825407' // 饿了么关键词优化的Coze Bot ID
+    botId: '7540539099225129000' // 饿了么关键词优化的Coze Bot ID
   },
   {
     id: 'eleme-dish-description',

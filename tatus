@@ -1,0 +1,22 @@
+[1mdiff --git a/src/config/api.ts b/src/config/api.ts[m
+[1mindex 3d7e3b9..a7a0a37 100644[m
+[1m--- a/src/config/api.ts[m
+[1m+++ b/src/config/api.ts[m
+[36m@@ -13,7 +13,7 @@[m [mexport const API_CONFIG: APIConfig = {[m
+ // Coze API配置[m
+ export const COZE_CONFIG = {[m
+   baseUrl: 'https://api.coze.cn/v3',[m
+[31m-  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_YdKv5HeqFm3QfdxjjzDS4Cy7570wirB8gno7sbR2qI8djmCYEv0wr1lRJgdMeRvN',[m
+[32m+[m[32m  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_yP8HAifFzffHbZm6gcFm5wrqbGook3rEvxoI7qr1Ui1uqgafON1aOksjs5R5DgiI',[m
+   botId: process.env.NEXT_PUBLIC_COZE_BOT_ID || '7432143655349338139',[m
+   userId: 'user_' + Math.random().toString(36).substr(2, 9), // 生成随机用户ID[m
+   timeout: 30000,[m
+[36m@@ -23,7 +23,7 @@[m [mexport const COZE_CONFIG = {[m
+ // 备用配置 - 如果主配置不工作，可以尝试这些[m
+ export const COZE_CONFIG_ALT = {[m
+   baseUrl: 'https://api.coze.com/v3', // 国际版[m
+[31m-  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_YdKv5HeqFm3QfdxjjzDS4Cy7570wirB8gno7sbR2qI8djmCYEv0wr1lRJgdMeRvN',[m
+[32m+[m[32m  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_yP8HAifFzffHbZm6gcFm5wrqbGook3rEvxoI7qr1Ui1uqgafON1aOksjs5R5DgiI',[m
+   botId: process.env.NEXT_PUBLIC_COZE_BOT_ID || '7432143655349338139',[m
+   userId: 'user_' + Math.random().toString(36).substr(2, 9),[m
+ };[m

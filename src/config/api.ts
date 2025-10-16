@@ -13,7 +13,7 @@ export const API_CONFIG: APIConfig = {
 // Coze API配置
 export const COZE_CONFIG = {
   baseUrl: 'https://api.coze.cn/v3',
-  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_yP8HAifFzffHbZm6gcFm5wrqbGook3rEvxoI7qr1Ui1uqgafON1aOksjs5R5DgiI',
+  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_rWkhiEHh4C94GwgwijLQKLbFeGrdQFTOXmhiV6pfgHSGQiVf0kKgVfOTMX2YLRmD',
   botId: process.env.NEXT_PUBLIC_COZE_BOT_ID || '7432143655349338139',
   userId: 'user_' + Math.random().toString(36).substr(2, 9), // 生成随机用户ID
   timeout: 30000,
@@ -23,7 +23,7 @@ export const COZE_CONFIG = {
 // 备用配置 - 如果主配置不工作，可以尝试这些
 export const COZE_CONFIG_ALT = {
   baseUrl: 'https://api.coze.com/v3', // 国际版
-  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_yP8HAifFzffHbZm6gcFm5wrqbGook3rEvxoI7qr1Ui1uqgafON1aOksjs5R5DgiI',
+  apiKey: process.env.NEXT_PUBLIC_COZE_API_KEY || 'pat_rWkhiEHh4C94GwgwijLQKLbFeGrdQFTOXmhiV6pfgHSGQiVf0kKgVfOTMX2YLRmD',
   botId: process.env.NEXT_PUBLIC_COZE_BOT_ID || '7432143655349338139',
   userId: 'user_' + Math.random().toString(36).substr(2, 9),
 };

@@ -37,6 +37,102 @@
 
 ## 🆕 最近更新
 
+### 🖥️ **v2.6.0 - Tauri 桌面应用下载功能集成** (2025-01-15)
+
+#### 🎯 **重大更新**
+- **🖥️ Tauri 桌面应用支持**: 完整集成 Tauri 下载功能，支持在呈尚策划工具箱中正常下载文件
+- **🔄 双环境自动适配**: 一套代码同时支持浏览器和 Tauri 桌面应用
+- **📥 下载功能升级**: 小红书图文助手的 PNG 导出功能现已支持桌面应用
+- **🛠️ 开发工具增强**: 新增环境检测调试组件，便于开发和测试
+- **📚 完整技术文档**: 提供详细的集成指南和快速上手文档
+
+#### 🛠️ **技术改进**
+
+**核心下载模块** (`src/lib/tauriDownload.ts`):
+- ✅ `isTauriEnvironment()` - 自动检测运行环境（浏览器 vs Tauri）
+- ✅ `downloadImage()` - 图片下载（支持 PNG/JPG/SVG/GIF/WEBP）
+- ✅ `downloadTable()` - 表格下载（支持 CSV/Excel）
+- ✅ `downloadBlob()` - 通用 Blob 下载
+- ✅ 完整的 TypeScript 类型定义和错误处理
+
+**SVG 导出升级** (`src/lib/svgUtils.ts`):
+- ✅ `downloadSVGAsPNG()` 函数重构，集成 Tauri API
+- ✅ 自动数据转换流程：SVG → PNG → Blob → Data URL → Tauri API
+- ✅ 保留浏览器环境完全兼容性
+
+**调试工具组件** (`src/components/debug/TauriEnvironmentInfo.tsx`):
+- ✅ 实时显示当前运行环境状态
+- ✅ 检测 `__TAURI__` 对象和 API 可用性
+- ✅ 页面右下角显示调试信息面板
+
+#### 📋 **技术实现细节**
+
+**Tauri API 集成**:
+```typescript
+// 环境自动检测
+const isTauri = typeof window.__TAURI__ !== 'undefined';
+
+// 浏览器环境：使用传统 <a download>
+// Tauri 环境：使用 Dialog API + FS API
+await window.__TAURI__.core.invoke('plugin:dialog|save', {...});
+await window.__TAURI__.core.invoke('plugin:fs|write_file', bytes, {...});
+```
+
+**下载流程优化**:
+1. 自动检测运行环境
+2. 浏览器：直接触发下载
+3. Tauri：显示系统文件保存对话框 → 用户选择路径 → 写入文件
+4. 完整的错误处理和用户提示
+
+#### 📚 **新增文档**
+
+1. **`TAURI_DOWNLOAD_QUICK_START.md`** - 5分钟快速集成指南
+   - 复制即用的代码示例
+   - 常见场景实现方法
+   - 调试测试步骤
+
+2. **`TAURI_DOWNLOAD_INTEGRATION_GUIDE.md`** - 完整技术文档
+   - 详细的 API 说明和参数格式
+   - 调试指南和错误处理
+   - 进阶用法（Excel导出、批量下载等）
+
+3. **`TAURI_INTEGRATION_STATUS.md`** - 集成状态说明
+   - 集成检查清单
+   - 测试验证步骤
+   - 技术细节解析
+
+#### 🎯 **应用场景**
+
+- **小红书图文助手**: 导出 PNG 图片到本地（已集成）
+- **表格数据导出**: CSV/Excel 文件下载（已支持）
+- **Canvas 图片导出**: 任意 Canvas 内容保存（已支持）
+- **远程图片下载**: 支持下载网络图片（已支持）
+
+#### ✅ **兼容性保证**
+
+- ✅ **浏览器环境**: 使用原生 `<a download>` 方法，功能完全正常
+- ✅ **Tauri 桌面**: 使用 Tauri Dialog + FS API，支持系统文件保存对话框
+- ✅ **Vercel 部署**: 不影响现有 Web 部署，自动适配浏览器环境
+- ✅ **零侵入集成**: 现有代码无需大量修改，自动环境检测
+
+#### 🔧 **开发工具**
+
+启用环境检测组件（可选，用于开发调试）:
+```tsx
+import { TauriEnvironmentInfo } from '@/components/debug/TauriEnvironmentInfo';
+
+// 在页面中添加
+{process.env.NODE_ENV === 'development' && <TauriEnvironmentInfo />}
+```
+
+#### 📊 **代码统计**
+
+- 新增文件: 5 个（3个文档 + 2个代码文件）
+- 修改文件: 1 个（`svgUtils.ts`）
+- 代码量: 1991 行新增
+
+---
+
 ### 🚀 **v2.5.0 - 新增相似话术生成助手与界面优化** (2025-01-22)
 
 #### 🎯 **重大更新**
@@ -245,6 +341,14 @@
 - 💾 **会话管理**: 智能的会话创建和管理系统
 - 🚀 **即时切换**: 点击机器人立即进入对话界面
 
+### 🖥️ **Tauri 桌面应用支持**
+- 🖥️ **双环境兼容**: 同时支持浏览器和 Tauri 桌面应用（呈尚策划工具箱）
+- 📥 **智能下载**: 自动适配环境，浏览器使用原生下载，桌面使用系统对话框
+- 🎨 **PNG 导出**: 小红书图文助手支持在桌面应用中导出高清图片
+- 📊 **表格导出**: 支持 CSV/Excel 文件在桌面应用中保存
+- 🔍 **环境检测**: 自动识别运行环境，无需手动配置
+- 🛠️ **调试工具**: 提供环境检测组件，便于开发和测试
+
 ### 🛠️ **技术特色**
 - ⚡ **Coze集成**: 基于Coze平台的专业AI机器人
 - 🔧 **模块化架构**: 易于扩展的组件化设计
@@ -300,6 +404,12 @@
 ├── Zustand             # 轻量级状态管理
 ├── React Hooks         # 组件状态管理
 └── Local Storage       # 本地数据持久化
+
+🖥️ 桌面应用支持
+├── Tauri 集成          # 桌面应用运行时支持
+├── Dialog API          # 系统文件保存对话框
+├── FS API              # 文件系统读写操作
+└── 环境自动检测        # 浏览器/桌面环境识别
 ```
 
 ### 🔧 **开发工具**

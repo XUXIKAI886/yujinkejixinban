@@ -1,6 +1,9 @@
 /**
  * SVG处理工具函数
+ * 支持浏览器和 Tauri 桌面应用双环境
  */
+
+import { downloadImage } from './tauriDownload';
 
 // 检测文本中是否包含SVG代码
 export function containsSVG(content: string): boolean {
@@ -145,23 +148,36 @@ export async function svgToPNG(svgContent: string, scale: number = 2): Promise<B
   });
 }
 
-// 下载PNG文件
+// 下载PNG文件 - 支持浏览器和Tauri双环境
 export async function downloadSVGAsPNG(svgContent: string, filename?: string): Promise<void> {
   try {
+    console.log('📥 [SVG下载] 开始转换和下载:', filename);
+
+    // 1. 将SVG转换为PNG Blob
     const blob = await svgToPNG(svgContent);
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename || `xiaohongshu-card-${Date.now()}.png`;
-    
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    
-    URL.revokeObjectURL(url);
+    console.log('✅ [SVG下载] PNG转换成功, 大小:', blob.size, 'bytes');
+
+    // 2. 将Blob转换为Data URL
+    const reader = new FileReader();
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error('Blob读取失败'));
+      reader.readAsDataURL(blob);
+    });
+
+    console.log('✅ [SVG下载] Data URL生成成功');
+
+    // 3. 使用通用下载函数（自动适配浏览器和Tauri环境）
+    const finalFilename = filename || `xiaohongshu-card-${Date.now()}.png`;
+    const success = await downloadImage(dataUrl, finalFilename);
+
+    if (!success) {
+      throw new Error('文件保存失败');
+    }
+
+    console.log('✅ [SVG下载] 下载完成');
   } catch (error) {
-    console.error('下载PNG失败:', error);
+    console.error('❌ [SVG下载] 下载失败:', error);
     throw error;
   }
 }

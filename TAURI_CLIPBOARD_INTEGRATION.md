@@ -97,17 +97,68 @@ const text = await readFromClipboard();
 ### 环境检测
 
 ```typescript
+// 检测是否在 Tauri 环境
 export function isTauriEnvironment(): boolean {
   return typeof window !== 'undefined' &&
          typeof window.__TAURI__ !== 'undefined' &&
          typeof window.__TAURI__.core !== 'undefined' &&
          typeof window.__TAURI__.core.invoke === 'function';
 }
+
+// 检测是否为本地 URL（Tauri 插件仅限本地）
+function isLocalUrl(): boolean {
+  const url = window.location.href;
+  return url.startsWith('tauri://') ||
+         url.startsWith('http://tauri.localhost') ||
+         url.startsWith('https://tauri.localhost') ||
+         url.startsWith('http://localhost') ||
+         url.startsWith('file://');
+}
+
+// 检测是否可以使用 Tauri 剪贴板 API
+function canUseTauriClipboard(): boolean {
+  return isTauriEnvironment() && isLocalUrl();
+}
+```
+
+### 智能路由策略
+
+代码会根据环境自动选择最佳实现：
+
+```
+┌─────────────────────────────────────────┐
+│         copyToClipboard(text)          │
+└─────────────────┬───────────────────────┘
+                  │
+                  ▼
+          ┌───────────────┐
+          │  环境检测      │
+          └───────┬───────┘
+                  │
+     ┌────────────┼────────────┐
+     │            │            │
+     ▼            ▼            ▼
+┌─────────┐ ┌─────────┐ ┌──────────┐
+│Tauri本地│ │Tauri远程│ │ 浏览器   │
+│  URL    │ │  URL    │ │          │
+└────┬────┘ └────┬────┘ └────┬─────┘
+     │           │           │
+     ▼           ▼           ▼
+┌─────────┐ ┌─────────┐ ┌──────────┐
+│Tauri API│ │execCmd  │ │Clipboard │
+│         │ │(降级)   │ │   API    │
+└─────────┘ └─────────┘ └────┬─────┘
+                             │失败
+                             ▼
+                        ┌─────────┐
+                        │execCmd  │
+                        │(降级)   │
+                        └─────────┘
 ```
 
 ### 三层降级策略
 
-1. **Tauri 环境**: 使用 `plugin:clipboard-manager|write_text`
+1. **Tauri 本地环境**: 使用 `plugin:clipboard-manager|write_text`
    ```typescript
    await window.__TAURI__.core.invoke('plugin:clipboard-manager|write_text', {
      text: text,
@@ -119,7 +170,7 @@ export function isTauriEnvironment(): boolean {
    await navigator.clipboard.writeText(text);
    ```
 
-3. **降级方案**: 使用 execCommand
+3. **降级方案**: 使用 execCommand（Tauri 远程 URL 或 API 失败时）
    ```typescript
    const textarea = document.createElement('textarea');
    textarea.value = text;
@@ -231,19 +282,54 @@ const handleCopy = async () => {
 
 **A**: 某些浏览器需要 HTTPS 才能使用 Clipboard API。本地开发时会自动使用降级方案（execCommand）。
 
-### Q2: Tauri 环境中复制失败？
+### Q2: Tauri 环境中显示"检测到远程URL，使用降级方案"？
 
-**A**: 检查以下几点：
-1. 确认 `clipboard-manager` 插件已启用
-2. 检查 Tauri 版本是否支持该插件
-3. 查看控制台错误日志
+**A**: 这是正常现象！Tauri 剪贴板插件仅在本地 URL 下可用（安全限制）。
 
-### Q3: 如何知道复制功能使用了哪种实现？
+**Tauri 权限策略**:
+- ✅ **本地 URL**: `tauri://localhost`、`http://localhost`、`file://`
+- ❌ **远程 URL**: `https://www.yujinkeji.me/` 等线上地址
 
-**A**: 在控制台中查看日志：
+**控制台日志示例**:
 ```
 🔍 [剪贴板] 环境检测: Tauri桌面应用
+⚠️ [Tauri] 检测到远程URL，使用降级方案: https://www.yujinkeji.me/
+✅ [降级方案] 文本复制成功 (execCommand)
+```
+
+**解决方案**: 降级方案（execCommand）完全可用，功能不受影响！
+
+### Q3: 为什么 Tauri 环境不使用原生 API？
+
+**A**:
+- **本地应用**（tauri://localhost）: 使用 Tauri 原生剪贴板 API
+- **远程网页**（https://xxx）: 受权限策略限制，自动使用 execCommand 降级方案
+- **浏览器环境**: 优先使用 Clipboard API，失败时降级
+
+这是 Tauri 的安全设计，防止远程网页滥用系统权限。
+
+### Q4: 如何知道复制功能使用了哪种实现？
+
+**A**: 在控制台中查看日志：
+
+**本地 Tauri**:
+```
+🔍 [剪贴板] 环境检测: Tauri桌面应用
+📋 [Tauri] 使用原生剪贴板 API
 ✅ [Tauri] 文本复制成功
+```
+
+**远程 Tauri**:
+```
+🔍 [剪贴板] 环境检测: Tauri桌面应用
+⚠️ [Tauri] 检测到远程URL，使用降级方案
+✅ [降级方案] 文本复制成功 (execCommand)
+```
+
+**浏览器**:
+```
+🔍 [剪贴板] 环境检测: 浏览器
+✅ [浏览器] 文本复制成功 (Clipboard API)
 ```
 
 ## 🎨 最佳实践

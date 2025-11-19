@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-这是一个基于 Next.js 15 的专业 AI 机器人聊天平台，专门为美团外卖运营提供15个专业机器人服务。项目使用 TypeScript、Tailwind CSS 和多个 AI API 提供商（Coze、DeepSeek、Gemini）。
+这是一个基于 Next.js 15 的专业 AI 机器人聊天平台，专门为美团外卖和饿了么运营提供22个专业机器人服务。项目使用 TypeScript、Tailwind CSS 和多个 AI API 提供商（Coze、DeepSeek、Gemini），并集成了 Tauri 桌面应用支持。
 
 ## 核心命令
 
@@ -50,11 +50,16 @@ deploy.sh
 
 ### 多API架构设计
 项目采用多API提供商架构，支持三种API服务：
-- **Gemini API**: 通用AI对话服务（通过 Google AI Studio）
-- **Coze API**: 专业机器人服务（15个专业Bot）
+- **Gemini API**: 通用AI对话服务（通过 Google AI Studio，使用 gemini-2.5-flash-lite-preview）
+- **Coze API**: 专业机器人服务（22个专业Bot，每个Bot有独立ID）
 - **DeepSeek API**: 小红书图文生成专用服务
 
-每个机器人配置中的 `provider` 字段决定API路由，API调用流程在 `src/lib/api.ts` 中统一处理，支持流式和非流式响应。
+**架构特点**:
+- 每个机器人配置中的 `provider` 字段决定API路由（gemini/coze/deepseek）
+- API调用流程在 `src/lib/api.ts` 中统一处理（1012行核心逻辑）
+- 支持流式响应（SSE）和非流式响应
+- Coze API 支持文件上传（图片）
+- 自动消息格式转换（Gemini/Coze格式互转）
 
 ### 项目结构关键模块
 
@@ -94,26 +99,47 @@ deploy.sh
 
 #### 3. 状态管理 (`src/lib/store.ts`)
 - 基于 Zustand 的全局状态管理
-- 会话管理（创建、更新、删除）
-- 消息管理（添加、更新、流式处理）
-- 本地持久化存储
+- **会话管理**: createNewSession、updateSession、deleteSession、clearAllSessions
+- **消息管理**: addMessage、updateMessage（支持流式更新）、clearMessages
+- **持久化**: 使用 zustand/middleware 的 persist 中间件
+- **存储策略**: 仅持久化 sessions 和 selectedModelId 到 localStorage
+- **ID生成**: 使用时间戳+随机数生成唯一ID
 
 #### 4. 核心组件架构
 ```
-src/components/
-├── chat/                 # 聊天核心组件
-│   ├── ChatInterface.tsx # 主聊天界面
-│   ├── MessageList.tsx   # 消息列表（支持欢迎语）
-│   ├── MessageInput.tsx  # 输入组件
-│   └── SVGPreviewModal.tsx # SVG预览与下载
-├── sidebar/              # 侧边栏组件
-│   ├── BotSelector.tsx   # 机器人选择器
-│   ├── ChatHistory.tsx   # 对话历史
-│   └── ModelSelector.tsx # 模型选择器
-└── ui/                   # UI 基础组件
-    ├── MarkdownRenderer.tsx
-    ├── theme-toggle.tsx
-    └── tips-ticker.tsx   # 运营小贴士轮播
+src/
+├── app/                  # Next.js 15 App Router
+│   ├── layout.tsx        # 根布局（主题provider）
+│   ├── page.tsx          # 主页（ChatInterface）
+│   ├── test-coze/        # Coze API 测试页面
+│   ├── test-deepseek/    # DeepSeek API 测试页面
+│   └── test-svg-preview/ # SVG 预览测试页面
+├── components/
+│   ├── chat/             # 聊天核心组件
+│   │   ├── ChatInterface.tsx # 主聊天界面
+│   │   ├── MessageList.tsx   # 消息列表（支持欢迎语）
+│   │   ├── MessageInput.tsx  # 输入组件（文件上传）
+│   │   └── SVGPreviewModal.tsx # SVG预览与下载
+│   ├── sidebar/          # 侧边栏组件
+│   │   ├── BotSelector.tsx   # 机器人选择器
+│   │   ├── ChatHistory.tsx   # 对话历史
+│   │   └── ModelSelector.tsx # 模型选择器
+│   ├── debug/            # 调试工具
+│   │   └── TauriEnvironmentInfo.tsx # Tauri环境检测
+│   └── ui/               # UI 基础组件（shadcn/ui）
+│       ├── MarkdownRenderer.tsx # Markdown渲染
+│       ├── theme-toggle.tsx     # 主题切换
+│       └── tips-ticker.tsx      # 运营小贴士轮播
+├── lib/                  # 核心逻辑库
+│   ├── api.ts            # API调用（1012行）
+│   ├── store.ts          # Zustand状态管理
+│   ├── tauriDownload.ts  # Tauri下载功能
+│   └── svgUtils.ts       # SVG工具函数
+├── config/               # 配置文件
+│   ├── models.ts         # 机器人配置（22个）
+│   └── api.ts            # API端点配置
+└── types/                # TypeScript类型定义
+    └── index.ts          # 核心类型
 ```
 
 ### API 集成架构
@@ -148,21 +174,42 @@ src/components/
 - 饿了么日报: `7541990904928862260`
 
 #### API 调用流程
-1. **用户输入** → MessageInput 组件 (`src/components/chat/MessageInput.tsx`)
-2. **模型判断** → 根据 `provider` 字段路由到对应 API:
-   - `gemini`: 调用 `callGeminiAPIStream()`
-   - `coze`: 调用 `callCozeAPIStream()` 
-   - `deepseek`: 调用 `callDeepSeekAPIStream()`
-3. **API 调用** → `src/lib/api.ts` 统一处理（支持文件上传）
-4. **流式响应** → 实时更新消息内容（打字机效果）
-5. **状态更新** → Zustand store 自动持久化到 localStorage
+```
+用户输入
+  ↓
+MessageInput.tsx (src/components/chat/MessageInput.tsx:handleSendMessage)
+  ↓
+添加用户消息到 store (useChatStore.addMessage)
+  ↓
+获取当前模型配置 (modelConfig.provider)
+  ↓
+路由到对应 API (src/lib/api.ts):
+  ├─ provider='gemini'   → callGeminiAPIStream()
+  ├─ provider='coze'     → callCozeAPIStream()
+  └─ provider='deepseek' → callDeepSeekAPIStream()
+  ↓
+API 返回流式响应 (Server-Sent Events)
+  ↓
+实时更新消息内容 (useChatStore.updateMessage)
+  ↓
+Zustand 自动持久化 → localStorage
+```
+
+**关键点**:
+- 支持文件上传（仅 Coze API）
+- 流式响应使用 ReadableStream + TextDecoder
+- 消息格式自动转换（Gemini ↔ Coze）
+- 错误处理和重试机制
 
 #### 关键文件关系
-- `src/types/index.ts`: 核心类型定义
-- `src/config/models.ts`: 15个机器人配置
+- `src/types/index.ts`: 核心类型定义（Message、ModelConfig、ChatSession等）
+- `src/config/models.ts`: 22个机器人配置（美团15个+饿了么7个）
 - `src/config/api.ts`: API端点和配置
-- `src/lib/store.ts`: Zustand状态管理
-- `src/lib/api.ts`: API调用核心逻辑（1000+行）
+- `src/lib/store.ts`: Zustand状态管理（持久化到localStorage）
+- `src/lib/api.ts`: API调用核心逻辑（1012行，支持流式响应）
+- `src/lib/tauriDownload.ts`: Tauri桌面应用下载功能
+- `src/lib/tauriClipboard.ts`: Tauri桌面应用剪贴板功能
+- `src/lib/svgUtils.ts`: SVG转PNG下载工具
 
 ## 开发规范
 
@@ -231,11 +278,20 @@ NEXT_PUBLIC_COZE_BOT_ID=7432143655349338139   # 默认 Bot
 
 ### 静态导出模式
 项目配置了 `next.config.ts` 支持静态导出：
+- 输出模式: `output: 'export'`（静态HTML导出）
+- 构建目录: `distDir: 'out'`
+- 图片优化: `images.unoptimized: true`（静态导出必需）
+- GitHub Pages 支持: 自动配置 basePath 和 assetPrefix
 - 使用 `npm run build:export` 生成静态文件到 `out/` 目录
 - 支持部署到任何静态文件服务器
 - 所有 API 调用通过客户端进行
 
 ### 生产部署流程
+**自动化部署（推荐）**:
+- Windows: 运行 `deploy.bat`
+- Linux/Mac: 运行 `deploy.sh`
+
+**手动部署**:
 1. 执行构建: `npm run build:export`
 2. 文件输出到: `out/` 目录
 3. 部署静态文件到服务器
@@ -268,9 +324,107 @@ NEXT_PUBLIC_COZE_BOT_ID=7432143655349338139   # 默认 Bot
 - 函数和变量使用 camelCase
 - 常量使用 UPPER_SNAKE_CASE
 
+### TypeScript 类型系统
+核心类型定义（`src/types/index.ts`）:
+```typescript
+Message {
+  id: string                    // 消息唯一ID
+  role: 'user' | 'assistant' | 'system'
+  content: string               // 消息内容
+  timestamp: number             // Unix时间戳
+  isStreaming?: boolean         // 流式输出中
+}
+
+ModelConfig {
+  id: string                    // 模型唯一ID
+  name: string                  // 显示名称
+  provider?: 'gemini' | 'coze' | 'deepseek'
+  welcomeMessage?: string       // 欢迎语
+  systemPrompt?: string         // 系统提示词
+  // ... 更多配置
+}
+
+ChatSession {
+  id: string                    // 会话ID
+  title: string                 // 会话标题
+  messages: Message[]           // 消息列表
+  modelId: string               // 使用的模型ID
+  createdAt: number            // 创建时间
+  updatedAt: number            // 更新时间
+}
+```
+
 ### 开发注意事项
 - 新增机器人时必须更新 `src/config/models.ts` 和 API映射
 - 所有API调用都要通过 `src/lib/api.ts` 统一处理
 - 流式响应处理使用 Server-Sent Events (SSE)
 - 文件上传仅支持 Coze API (图片格式)
 - Markdown 语法会被自动清理为纯文本（针对Coze输出）
+
+## 关键架构决策
+
+### 为什么使用客户端API调用？
+- **静态导出需求**: 项目使用 `output: 'export'` 生成静态HTML
+- **无服务器部署**: 支持部署到 GitHub Pages、Vercel、Netlify等静态托管
+- **Tauri集成**: 桌面应用需要直接调用API
+- **API密钥**: 使用 `NEXT_PUBLIC_*` 环境变量，客户端可访问
+
+### 为什么使用 Zustand？
+- **简单轻量**: 相比 Redux 更简洁，学习曲线低
+- **TypeScript友好**: 完整的类型推导支持
+- **持久化**: 内置 persist 中间件，自动同步到 localStorage
+- **无Provider包裹**: 直接使用 hooks，无需 Context Provider
+
+### 为什么支持多个API提供商？
+- **专业分工**: Coze专注美团外卖，DeepSeek专注图文生成
+- **成本优化**: 不同API价格不同，可灵活选择
+- **容错备份**: 单个API故障时可切换到其他提供商
+- **功能互补**: Coze支持文件上传，Gemini通用对话能力强
+
+### Next.js 配置关键点
+```typescript
+// next.config.ts
+output: 'export'              // 静态导出模式
+images.unoptimized: true      // 禁用图片优化（静态导出必需）
+distDir: 'out'                // 输出到 out/ 目录
+eslint.ignoreDuringBuilds     // 生产构建忽略 lint 错误
+typescript.ignoreBuildErrors  // 生产构建忽略 TS 错误
+```
+
+## Tauri 桌面应用集成
+
+### 环境自动检测
+项目支持浏览器和 Tauri 双环境运行：
+- `src/lib/tauriDownload.ts` 提供 `isTauriEnvironment()` 函数自动检测
+- 下载功能会根据环境自动选择实现方式
+- 浏览器: 使用 `<a download>` 方式
+- Tauri: 使用 Dialog API + FS API
+
+### Tauri 下载功能
+核心函数（位于 `src/lib/tauriDownload.ts`）:
+- `downloadImage()`: 图片下载（PNG/JPG/SVG/GIF/WEBP）
+- `downloadTable()`: 表格下载（CSV/Excel）
+- `downloadBlob()`: 通用 Blob 下载
+
+### Tauri 剪贴板功能
+核心函数（位于 `src/lib/tauriClipboard.ts`）:
+- `copyToClipboard()`: 复制文本到剪贴板（自动环境检测）
+- `readFromClipboard()`: 从剪贴板读取文本
+- `fallbackCopyToClipboard()`: 降级方案（使用 execCommand）
+
+**使用场景**:
+- 消息复制功能（MessageBubble 组件）
+- 自动检测环境并选择最佳实现
+- 浏览器: 使用 Clipboard API
+- Tauri: 使用 plugin:clipboard-manager
+- 降级: 使用 document.execCommand
+
+### 调试工具
+- 使用 `<TauriEnvironmentInfo />` 组件（位于 `src/components/debug/TauriEnvironmentInfo.tsx`）
+- 显示当前运行环境、API 可用性等调试信息
+- 页面右下角显示调试面板
+
+### 相关文档
+- `TAURI_DOWNLOAD_QUICK_START.md`: 快速集成指南
+- `TAURI_DOWNLOAD_INTEGRATION_GUIDE.md`: 完整技术文档
+- `TAURI_INTEGRATION_STATUS.md`: 集成状态检查清单

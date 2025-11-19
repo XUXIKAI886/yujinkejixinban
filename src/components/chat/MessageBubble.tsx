@@ -9,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { SVGPreviewModal } from './SVGPreviewModal';
 import { containsSVG, extractSVG } from '@/lib/svgUtils';
+import { copyToClipboard } from '@/lib/tauriClipboard';
 
 interface MessageBubbleProps {
   message: Message;
@@ -26,9 +27,11 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message.content);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const success = await copyToClipboard(message.content);
+      if (success) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     } catch (error) {
       console.error('Failed to copy text:', error);
     }

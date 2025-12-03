@@ -20,6 +20,15 @@ export function SVGPreviewModal({ svgContent, isOpen, onClose }: SVGPreviewModal
   const isValidSVG = validateSVG(svgContent);
   const optimizedSVG = isValidSVG ? optimizeSVGForDisplay(svgContent) : '';
 
+  // 调试日志
+  console.log('🖼️ [SVGPreviewModal] 模态框状态:', {
+    isOpen,
+    svgContentLength: svgContent.length,
+    isValidSVG,
+    optimizedSVGLength: optimizedSVG.length,
+    svgPreview: svgContent.substring(0, 100)
+  });
+
   // 将SVG转换为PNG并下载
   const downloadAsPNG = async () => {
     if (!isValidSVG) {

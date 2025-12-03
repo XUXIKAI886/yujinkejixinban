@@ -38,7 +38,7 @@ export const COZE_ENDPOINTS = {
   LIST_MESSAGES: (chatId: string) => `${COZE_CONFIG.baseUrl}/chat/message/list?chat_id=${chatId}`
 };
 
-// DeepSeek API配置
+// DeepSeek API配置 (保留备用)
 export const DEEPSEEK_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
   apiKey: process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY || 'sk-63916ff05d33451e8905948b5dcca49d',
@@ -48,4 +48,18 @@ export const DEEPSEEK_CONFIG = {
 
 export const DEEPSEEK_ENDPOINTS = {
   CHAT: `${DEEPSEEK_CONFIG.baseUrl}/chat/completions`
+};
+
+// Gemini 3.0 API配置 (Gemini原生格式，用于小红书图文)
+export const GEMINI3_CONFIG = {
+  baseUrl: process.env.NEXT_PUBLIC_GEMINI3_BASE_URL || 'https://yunwu.ai/v1beta/models',
+  apiKey: process.env.NEXT_PUBLIC_GEMINI3_API_KEY || 'sk-oc2k5DDZqGC8lhGCUPvLHvOvnSEryShZjbTXLgwPKeafhKhR',
+  model: 'gemini-3-pro-preview',
+  timeout: 120000,
+  maxRetries: 3
+};
+
+export const GEMINI3_ENDPOINTS = {
+  // Gemini原生流式生成接口
+  STREAM_GENERATE: `${GEMINI3_CONFIG.baseUrl}/${GEMINI3_CONFIG.model}:streamGenerateContent`
 };

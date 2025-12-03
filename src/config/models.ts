@@ -277,14 +277,16 @@ export const PRESET_MODELS: ModelConfig[] = [
     provider: 'coze'
   },
   {
-    id: 'deepseek-xiaohongshu',
+    id: 'gemini3-xiaohongshu',
     name: '小红书风格图文助手',
     description: '可以将任何文档内容转换成精美好看的小红书风格图文',
-    model: 'deepseek-chat',
-    temperature: 0.8,
-    max_tokens: 4096,
+    model: 'gemini-3-pro-preview',
+    temperature: 0.7,
+    max_tokens: 8192,
     icon: 'Image',
-    systemPrompt: `# 任务：
+    systemPrompt: `【重要：不要输出任何思考过程、分析、解释或推理内容。直接输出完整的 SVG 代码，从 <svg 开始到 </svg> 结束。】
+
+# 任务：
 请你制作适合小红书平台发布的精美卡片（SVG），竖屏，适合手机阅读。
 
 ## 要求：
@@ -302,7 +304,9 @@ export const PRESET_MODELS: ModelConfig[] = [
 - 颜色使用十六进制代码，避免复杂效果
 
 ## 输出格式：
-请直接输出完整的SVG代码，不要添加任何解释文字或代码块标记。
+[重要] 禁止输出思考过程、步骤分析或任何解释文字。
+[必须] 直接输出完整的 SVG 代码，不要添加代码块标记。
+[必须] 第一个字符必须是 <，最后一个字符必须是 >
 
 ## SVG模板示例：
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
@@ -339,7 +343,7 @@ export const PRESET_MODELS: ModelConfig[] = [
     welcomeMessage: `欢迎使用小红书图文风格
 
 请直接上传文字内容，我将立即为您生成精美好看的小红书图文风格！`,
-    provider: 'deepseek'
+    provider: 'gemini3'
   },
   {
     id: 'coze-operation-assistant',

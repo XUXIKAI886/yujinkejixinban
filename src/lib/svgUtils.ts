@@ -92,38 +92,41 @@ export async function svgToPNG(svgContent: string, scale: number = 2): Promise<B
     try {
       const cleaned = cleanSVGContent(svgContent);
       const dimensions = getSVGDimensions(cleaned);
-      
+
       // 创建canvas
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       if (!ctx) {
         reject(new Error('无法创建canvas上下文'));
         return;
       }
-      
+
       // 设置canvas尺寸
       canvas.width = dimensions.width * scale;
       canvas.height = dimensions.height * scale;
       ctx.scale(scale, scale);
-      
+
       // 设置白色背景
       ctx.fillStyle = 'white';
       ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-      
-      // 创建SVG数据URL
-      const svgBlob = new Blob([cleaned], { type: 'image/svg+xml;charset=utf-8' });
-      const svgUrl = URL.createObjectURL(svgBlob);
-      
+
+      // 将SVG转换为Base64编码的data URL（避免跨域问题）
+      const svgBase64 = btoa(unescape(encodeURIComponent(cleaned)));
+      const svgDataUrl = `data:image/svg+xml;base64,${svgBase64}`;
+
       const img = new Image();
+
+      // 关键：设置crossOrigin以避免canvas污染
+      img.crossOrigin = 'anonymous';
+
       img.onload = () => {
         try {
           // 绘制图片到canvas
           ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
-          
+
           // 转换为PNG Blob
           canvas.toBlob((blob) => {
-            URL.revokeObjectURL(svgUrl);
             if (blob) {
               resolve(blob);
             } else {
@@ -131,17 +134,15 @@ export async function svgToPNG(svgContent: string, scale: number = 2): Promise<B
             }
           }, 'image/png', 0.95);
         } catch (error) {
-          URL.revokeObjectURL(svgUrl);
           reject(error);
         }
       };
-      
+
       img.onerror = () => {
-        URL.revokeObjectURL(svgUrl);
         reject(new Error('SVG图片加载失败'));
       };
-      
-      img.src = svgUrl;
+
+      img.src = svgDataUrl;
     } catch (error) {
       reject(error);
     }
@@ -185,25 +186,34 @@ export async function downloadSVGAsPNG(svgContent: string, filename?: string): P
 // 验证SVG内容是否有效
 export function validateSVG(svgContent: string): boolean {
   try {
+    console.log('🔍 [SVG验证] 开始验证SVG内容, 长度:', svgContent.length);
+
     const cleaned = cleanSVGContent(svgContent);
-    
+    console.log('✅ [SVG验证] 清理后的SVG长度:', cleaned.length);
+
     // 基本的SVG结构检查
     if (!cleaned.includes('<svg') || !cleaned.includes('</svg>')) {
+      console.error('❌ [SVG验证] SVG标签不完整');
       return false;
     }
-    
+
+    console.log('✅ [SVG验证] SVG标签结构完整');
+
     // 尝试解析为DOM
     const parser = new DOMParser();
     const doc = parser.parseFromString(cleaned, 'image/svg+xml');
-    
+
     // 检查是否有解析错误
     const parserError = doc.querySelector('parsererror');
     if (parserError) {
+      console.error('❌ [SVG验证] DOM解析失败:', parserError.textContent);
       return false;
     }
-    
+
+    console.log('✅ [SVG验证] SVG验证成功');
     return true;
   } catch (error) {
+    console.error('❌ [SVG验证] 验证过程出错:', error);
     return false;
   }
 }

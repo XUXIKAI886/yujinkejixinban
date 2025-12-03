@@ -1,5 +1,5 @@
 import { Message, GeminiRequest, GeminiContent } from '@/types';
-import { API_CONFIG, API_ENDPOINTS, COZE_CONFIG, COZE_ENDPOINTS, DEEPSEEK_CONFIG, DEEPSEEK_ENDPOINTS } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS, COZE_CONFIG, COZE_ENDPOINTS, DEEPSEEK_CONFIG, DEEPSEEK_ENDPOINTS, GEMINI3_CONFIG, GEMINI3_ENDPOINTS } from '@/config/api';
 import { getModelById } from '@/config/models';
 
 // 将OpenAI格式的消息转换为Gemini格式
@@ -1007,6 +1007,318 @@ export async function testDeepSeekAPIConnection(): Promise<boolean> {
     return true;
   } catch (error) {
     console.error('DeepSeek API连接测试失败:', error);
+    return false;
+  }
+}
+
+// ==================== Gemini 3.0 API 相关函数 (Gemini原生格式) ====================
+
+// 提取SVG代码（去除思考过程）
+function extractSVGCode(content: string): string {
+  // 如果内容以 < 开头，说明是纯 SVG 代码
+  if (content.trim().startsWith('<svg')) {
+    return content;
+  }
+
+  // 尝试提取 <svg...>...</svg> 部分
+  const svgMatch = content.match(/<svg[\s\S]*<\/svg>/i);
+  if (svgMatch) {
+    console.log('🎨 提取到 SVG 代码，已过滤思考过程');
+    return svgMatch[0];
+  }
+
+  // 如果没有找到完整的 SVG，返回原内容
+  return content;
+}
+
+// Gemini原生格式的内容接口
+interface Gemini3Content {
+  role: 'user' | 'model';
+  parts: Array<{ text: string }>;
+}
+
+interface Gemini3Request {
+  systemInstruction?: {
+    role: 'user';
+    parts: Array<{ text: string }>;
+  };
+  contents: Gemini3Content[];
+  generationConfig?: {
+    temperature?: number;
+    topP?: number;
+    maxOutputTokens?: number;
+  };
+}
+
+// 将消息转换为Gemini原生格式
+export function convertToGemini3NativeFormat(messages: Message[], systemPrompt?: string): Gemini3Request {
+  const contents: Gemini3Content[] = [];
+
+  // 过滤掉系统消息，只处理用户和助手消息
+  const filteredMessages = messages.filter(msg => msg.role !== 'system');
+
+  for (const message of filteredMessages) {
+    contents.push({
+      role: message.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: message.content }]
+    });
+  }
+
+  const request: Gemini3Request = {
+    contents
+  };
+
+  // 如果有系统提示，添加到请求中
+  if (systemPrompt) {
+    request.systemInstruction = {
+      role: 'user',
+      parts: [{ text: systemPrompt }]
+    };
+  }
+
+  return request;
+}
+
+// 调用Gemini 3.0 API (非流式) - 使用Gemini原生格式
+export async function callGemini3API(
+  messages: Message[],
+  modelId: string
+): Promise<string> {
+  console.log('🚀 开始Gemini 3.0非流式API调用 (原生格式)');
+  console.log('📝 消息:', messages);
+
+  const model = getModelById(modelId);
+  if (!model) {
+    throw new Error(`未找到模型: ${modelId}`);
+  }
+
+  const requestBody = convertToGemini3NativeFormat(messages, model.systemPrompt);
+
+  // 添加生成配置
+  requestBody.generationConfig = {
+    temperature: model.temperature,
+    maxOutputTokens: model.max_tokens
+  };
+
+  console.log('📋 转换后的请求体:', JSON.stringify(requestBody, null, 2));
+
+  // 构建带key参数的URL
+  const url = `${GEMINI3_ENDPOINTS.STREAM_GENERATE}?key=${GEMINI3_CONFIG.apiKey}`;
+
+  try {
+    console.log('🌐 发送请求到:', url);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    console.log('📥 响应状态:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Gemini 3.0 API Error:', response.status, errorText);
+      throw new Error(`Gemini 3.0 API请求失败: ${response.status} ${response.statusText}\n错误详情: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('📊 响应数据:', data);
+
+    // 解析Gemini原生格式响应
+    if (data.candidates && data.candidates.length > 0) {
+      const candidate = data.candidates[0];
+      if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+        return candidate.content.parts[0].text || '';
+      }
+    }
+
+    throw new Error('Gemini 3.0 API响应格式不正确');
+  } catch (error) {
+    console.error('❌ Gemini 3.0 API调用错误:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Gemini 3.0 API调用失败');
+  }
+}
+
+// 流式调用Gemini 3.0 API - 使用Gemini原生格式
+export async function callGemini3APIStream(
+  messages: Message[],
+  modelId: string,
+  onChunk: (chunk: string) => void,
+  onComplete: () => void,
+  onError: (error: Error) => void
+): Promise<void> {
+  console.log('🚀 开始Gemini 3.0流式API调用 (原生格式)');
+  console.log('📝 消息:', messages);
+
+  const model = getModelById(modelId);
+  if (!model) {
+    onError(new Error(`未找到模型: ${modelId}`));
+    return;
+  }
+
+  const requestBody = convertToGemini3NativeFormat(messages, model.systemPrompt);
+
+  // 添加生成配置
+  requestBody.generationConfig = {
+    temperature: model.temperature,
+    maxOutputTokens: model.max_tokens
+  };
+
+  console.log('📋 转换后的请求体:', JSON.stringify(requestBody, null, 2));
+
+  // 构建带key和alt=sse参数的URL (流式响应)
+  const url = `${GEMINI3_ENDPOINTS.STREAM_GENERATE}?key=${GEMINI3_CONFIG.apiKey}&alt=sse`;
+
+  try {
+    console.log('🌐 发送请求到:', url);
+
+    // 设置120秒超时
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      console.log('⏰ 请求超时，正在中断...');
+      controller.abort();
+    }, 120000);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    console.log('📥 响应状态:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Gemini 3.0 Stream API Error:', response.status, errorText);
+      throw new Error(`Gemini 3.0流式API请求失败: ${response.status} ${response.statusText}\n错误详情: ${errorText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('无法获取响应流');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let accumulatedContent = '';
+
+    console.log('📡 开始读取Gemini 3.0流式响应...');
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          console.log('✅ Gemini 3.0流式响应读取完成');
+          break;
+        }
+
+        const chunk = decoder.decode(value, { stream: true });
+        console.log('📦 收到原始数据块:', chunk.substring(0, 200));
+        buffer += chunk;
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.trim() === '' || line.startsWith(':')) continue;
+
+          if (line.startsWith('data:')) {
+            const data = line.slice(5).trim();
+
+            if (data === '[DONE]') {
+              console.log('🏁 收到完成信号');
+              onComplete();
+              return;
+            }
+
+            try {
+              const parsed = JSON.parse(data);
+              console.log('📊 解析的数据:', JSON.stringify(parsed).substring(0, 200));
+
+              // 处理Gemini原生格式响应
+              if (parsed.candidates && parsed.candidates.length > 0) {
+                const candidate = parsed.candidates[0];
+                if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                  const text = candidate.content.parts[0].text || '';
+                  if (text) {
+                    accumulatedContent += text;
+                    console.log('📝 收到内容:', text.substring(0, 50));
+                    onChunk(accumulatedContent);
+                  }
+                }
+
+                // 检查是否完成
+                if (candidate.finishReason === 'STOP') {
+                  console.log('🏁 收到STOP信号');
+                }
+              }
+            } catch (parseError) {
+              console.warn('⚠️ 解析数据行失败:', data.substring(0, 100), parseError);
+            }
+          }
+        }
+      }
+
+      // 流结束，提取SVG代码（去除可能的思考过程）
+      if (accumulatedContent.trim()) {
+        const finalContent = extractSVGCode(accumulatedContent);
+        if (finalContent !== accumulatedContent) {
+          // 如果内容被过滤了，更新一次最终内容
+          onChunk(finalContent);
+        }
+      }
+
+      onComplete();
+    } catch (readError) {
+      console.error('❌ 读取流时出错:', readError);
+      throw readError;
+    } finally {
+      reader.releaseLock();
+    }
+  } catch (error) {
+    console.error('❌ Gemini 3.0流式API调用错误:', error);
+
+    // 区分不同类型的错误
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        onError(new Error('请求超时（120秒），请稍后重试'));
+      } else if (error.message === 'Failed to fetch') {
+        onError(new Error('网络连接失败，请检查网络后重试'));
+      } else {
+        onError(error);
+      }
+    } else {
+      onError(new Error('未知错误'));
+    }
+  }
+}
+
+// 测试Gemini 3.0 API连接
+export async function testGemini3APIConnection(): Promise<boolean> {
+  try {
+    const testMessages: Message[] = [
+      {
+        id: 'test',
+        role: 'user',
+        content: '你好',
+        timestamp: Date.now()
+      }
+    ];
+
+    await callGemini3API(testMessages, 'gemini3-xiaohongshu');
+    return true;
+  } catch (error) {
+    console.error('Gemini 3.0 API连接测试失败:', error);
     return false;
   }
 }

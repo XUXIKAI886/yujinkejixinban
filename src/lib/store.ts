@@ -155,7 +155,29 @@ export const useChatStore = create<ChatStore>()(
       partialize: (state) => ({
         sessions: state.sessions,
         selectedModelId: state.selectedModelId
-      })
+      }),
+      // 数据迁移：处理旧的模型ID
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as { selectedModelId?: string; sessions?: ChatSession[] };
+
+        // 迁移旧的 deepseek-xiaohongshu 到新的 gemini3-xiaohongshu
+        if (state.selectedModelId === 'deepseek-xiaohongshu') {
+          state.selectedModelId = 'gemini3-xiaohongshu';
+        }
+
+        // 迁移会话中的旧模型ID
+        if (state.sessions) {
+          state.sessions = state.sessions.map(session => {
+            if (session.modelId === 'deepseek-xiaohongshu') {
+              return { ...session, modelId: 'gemini3-xiaohongshu' };
+            }
+            return session;
+          });
+        }
+
+        return state;
+      },
+      version: 1
     }
   )
 );

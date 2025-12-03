@@ -25,6 +25,17 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
   const hasSVG = !isUser && containsSVG(message.content);
   const svgContent = hasSVG ? extractSVG(message.content) : '';
 
+  // 调试日志
+  if (!isUser && message.content.length > 0) {
+    console.log('📝 [MessageBubble] 检测SVG:', {
+      messageId: message.id,
+      contentLength: message.content.length,
+      hasSVG,
+      svgContentLength: svgContent.length,
+      contentPreview: message.content.substring(0, 100)
+    });
+  }
+
   const handleCopy = async () => {
     try {
       const success = await copyToClipboard(message.content);
@@ -35,6 +46,15 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
     } catch (error) {
       console.error('Failed to copy text:', error);
     }
+  };
+
+  const handlePreviewClick = () => {
+    console.log('👁️ [MessageBubble] 点击预览按钮', {
+      hasSVG,
+      svgContentLength: svgContent.length,
+      svgPreview: svgContent.substring(0, 200)
+    });
+    setShowSVGPreview(true);
   };
 
   const formatTime = (timestamp: number) => {
@@ -100,7 +120,7 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
                   variant="ghost"
                   size="sm"
                   className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-pink-100 dark:hover:bg-pink-900/30 rounded-md"
-                  onClick={() => setShowSVGPreview(true)}
+                  onClick={handlePreviewClick}
                   title="预览小红书图文"
                 >
                   <Eye className="h-3.5 w-3.5 text-pink-600 dark:text-pink-400" />

@@ -239,7 +239,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'meituan-brand-story': 'coze-brand-story',
         'meituan-dianjin-master': 'coze-dianjin-master',
         'meituan-logo-design': 'coze-logo-design',
-        'xiaohongshu-assistant': 'deepseek-xiaohongshu',
+        'xiaohongshu-assistant': 'gemini3-xiaohongshu',
         'coze-operation-assistant': 'coze-operation-assistant',
         'menu-price-extractor': 'coze-menu-price-extractor',
         'similar-script-generator': 'coze-similar-script',

@@ -199,7 +199,13 @@ export function validateSVG(svgContent: string): boolean {
 
     console.log('✅ [SVG验证] SVG标签结构完整');
 
-    // 尝试解析为DOM
+    // 在服务端环境跳过 DOMParser 验证（DOMParser 只在浏览器可用）
+    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+      console.log('⚠️ [SVG验证] 服务端环境，跳过DOM解析验证');
+      return true;
+    }
+
+    // 尝试解析为DOM（仅在浏览器环境）
     const parser = new DOMParser();
     const doc = parser.parseFromString(cleaned, 'image/svg+xml');
 

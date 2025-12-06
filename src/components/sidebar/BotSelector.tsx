@@ -207,6 +207,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '专注于为饿了么外卖店铺生成内容详实的运营日报简报',
     icon: 'FileText',
     botId: '7541990904928862260' // 饿了么日报的Coze Bot ID
+  },
+  {
+    id: 'kefu-pro',
+    name: '美团淘宝闪购在线客服助手PRO',
+    description: '专业的外卖代运营客服，在微信群里与店铺老板进行日常沟通',
+    icon: 'Headphones',
+    botId: 'gemini-3-pro-preview' // Gemini 3.0 Pro模型
   }
 ];
 
@@ -250,6 +257,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'eleme-meal-combo': 'eleme-meal-combo',
         'eleme-weekly-report': 'eleme-weekly-report',
         'eleme-daily-report': 'eleme-daily-report',
+        'kefu-pro': 'gemini3-kefu-pro',
       };
       return modelMap[botId] || 'coze';
     };
@@ -314,7 +322,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            已集成22个专业AI助手
+            已集成23个专业AI助手
           </p>
         </div>
       </div>

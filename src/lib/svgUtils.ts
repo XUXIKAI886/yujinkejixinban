@@ -18,41 +18,53 @@ export function extractSVG(content: string): string {
 
 // 清理和标准化SVG内容
 export function cleanSVGContent(svgContent: string): string {
-  // 移除可能的代码块标记
+  // 移除可能的代码块标记和思考过程
   let cleaned = svgContent
     .replace(/```svg\s*/g, '')
     .replace(/```\s*$/g, '')
     .replace(/```xml\s*/g, '')
+    .replace(/```\s*/g, '')
     .trim();
+
+  // 移除可能的思考过程文本（在SVG之前的文本）
+  const svgStartIndex = cleaned.indexOf('<svg');
+  if (svgStartIndex > 0) {
+    cleaned = cleaned.substring(svgStartIndex);
+  }
 
   // 确保SVG标签完整
   if (!cleaned.includes('<svg')) {
     return svgContent; // 如果不包含SVG标签，返回原内容
   }
 
-  // 提取SVG内容
+  // 提取SVG内容（使用非贪婪匹配）
   const svgMatch = cleaned.match(/<svg[\s\S]*?<\/svg>/i);
   if (svgMatch) {
     let svg = svgMatch[0];
-    
+
     // 确保SVG有基本的属性
     if (!svg.includes('xmlns')) {
       svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-    
+
     // 如果没有viewBox，尝试从width和height创建
     if (!svg.includes('viewBox')) {
       const widthMatch = svg.match(/width\s*=\s*["']?(\d+)["']?/);
       const heightMatch = svg.match(/height\s*=\s*["']?(\d+)["']?/);
-      
+
       if (widthMatch && heightMatch) {
         const width = widthMatch[1];
         const height = heightMatch[1];
         svg = svg.replace('<svg', `<svg viewBox="0 0 ${width} ${height}"`);
       }
     }
-    
+
     return svg;
+  }
+
+  // 如果没有找到完整的SVG，但包含<svg标签，可能正在流式传输
+  if (cleaned.includes('<svg')) {
+    return cleaned;
   }
 
   return cleaned;
@@ -191,9 +203,24 @@ export function validateSVG(svgContent: string): boolean {
     const cleaned = cleanSVGContent(svgContent);
     console.log('✅ [SVG验证] 清理后的SVG长度:', cleaned.length);
 
-    // 基本的SVG结构检查
-    if (!cleaned.includes('<svg') || !cleaned.includes('</svg>')) {
-      console.error('❌ [SVG验证] SVG标签不完整');
+    // 基本的SVG结构检查 - 必须包含 <svg 开头
+    if (!cleaned.includes('<svg')) {
+      console.error('❌ [SVG验证] 缺少SVG开始标签');
+      return false;
+    }
+
+    // 检查是否包含结束标签（如果内容足够长）
+    // 注意：流式传输中可能暂时没有结束标签，所以这里放宽检查
+    const hasSvgStart = cleaned.includes('<svg');
+    const hasSvgEnd = cleaned.includes('</svg>');
+
+    if (hasSvgStart && !hasSvgEnd && cleaned.length < 100) {
+      console.log('⚠️ [SVG验证] SVG可能正在流式传输中，暂时通过验证');
+      return true;
+    }
+
+    if (hasSvgStart && !hasSvgEnd) {
+      console.error('❌ [SVG验证] SVG标签不完整，缺少结束标签');
       return false;
     }
 

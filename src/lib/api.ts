@@ -1020,14 +1020,20 @@ function extractSVGCode(content: string): string {
     return content;
   }
 
-  // 尝试提取 <svg...>...</svg> 部分
-  const svgMatch = content.match(/<svg[\s\S]*<\/svg>/i);
+  // 尝试提取 <svg...>...</svg> 部分（使用非贪婪匹配）
+  const svgMatch = content.match(/<svg[\s\S]*?<\/svg>/i);
   if (svgMatch) {
     console.log('🎨 提取到 SVG 代码，已过滤思考过程');
     return svgMatch[0];
   }
 
-  // 如果没有找到完整的 SVG，返回原内容
+  // 如果没有找到完整的 SVG，但包含 <svg 标签，返回原内容（可能正在流式传输中）
+  if (content.includes('<svg')) {
+    console.log('⚠️ SVG 代码不完整，可能正在流式传输中');
+    return content;
+  }
+
+  // 如果没有找到 SVG，返回原内容
   return content;
 }
 

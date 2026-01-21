@@ -26,7 +26,9 @@ export function SVGPreviewModal({ svgContent, isOpen, onClose }: SVGPreviewModal
     svgContentLength: svgContent.length,
     isValidSVG,
     optimizedSVGLength: optimizedSVG.length,
-    svgPreview: svgContent.substring(0, 100)
+    svgPreview: svgContent.substring(0, 200),
+    hasSvgStart: svgContent.includes('<svg'),
+    hasSvgEnd: svgContent.includes('</svg>')
   });
 
   // 将SVG转换为PNG并下载
@@ -115,9 +117,17 @@ export function SVGPreviewModal({ svgContent, isOpen, onClose }: SVGPreviewModal
         <div className="flex-1 p-4 overflow-auto">
           <div className="flex justify-center items-center min-h-[400px]">
             {!isValidSVG ? (
-              <div className="text-center text-red-600 dark:text-red-400">
+              <div className="text-center text-red-600 dark:text-red-400 max-w-md">
                 <p className="text-lg font-medium mb-2">⚠️ SVG内容无效</p>
-                <p className="text-sm">无法解析SVG内容，请检查生成的代码是否完整</p>
+                <p className="text-sm mb-3">无法解析SVG内容，请检查生成的代码是否完整</p>
+                <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded">
+                  <p className="mb-1">可能的原因：</p>
+                  <ul className="text-left list-disc list-inside space-y-1">
+                    <li>SVG代码正在生成中（请等待完成）</li>
+                    <li>SVG代码不完整或格式错误</li>
+                    <li>包含了思考过程文本</li>
+                  </ul>
+                </div>
               </div>
             ) : (
               <div

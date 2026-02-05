@@ -17,7 +17,7 @@ export interface ModelConfig {
   max_tokens: number;
   systemPrompt?: string;
   icon?: string;
-  provider?: 'gemini' | 'coze' | 'deepseek' | 'gemini3'; // API提供商
+  provider?: 'gemini' | 'coze' | 'deepseek' | 'gemini3' | 'vectorengine'; // API提供商
   welcomeMessage?: string; // 欢迎语
 }
 

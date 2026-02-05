@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useChatStore } from '@/lib/store';
-import { callGeminiAPIStream, callCozeAPIStream, callDeepSeekAPIStream, callGemini3APIStream } from '@/lib/api';
+import { callGeminiAPIStream, callCozeAPIStream, callDeepSeekAPIStream, callGemini3APIStream, callVectorEngineAPIStream } from '@/lib/api';
 import { getModelById } from '@/config/models';
 
 export function useChat() {
@@ -52,6 +52,7 @@ export function useChat() {
       const isCozeModel = currentModel?.provider === 'coze';
       const isDeepSeekModel = currentModel?.provider === 'deepseek';
       const isGemini3Model = currentModel?.provider === 'gemini3';
+      const isVectorEngineModel = currentModel?.provider === 'vectorengine';
 
       // 根据模型类型选择API调用方式
       let apiCall;
@@ -61,12 +62,14 @@ export function useChat() {
         apiCall = callDeepSeekAPIStream;
       } else if (isGemini3Model) {
         apiCall = callGemini3APIStream;
+      } else if (isVectorEngineModel) {
+        apiCall = callVectorEngineAPIStream;
       } else {
         apiCall = callGeminiAPIStream;
       }
 
       // 调用API获取流式响应
-      if (isDeepSeekModel || isGemini3Model) {
+      if (isDeepSeekModel || isGemini3Model || isVectorEngineModel) {
         // DeepSeek API不支持文件上传，只传递基本参数
         await apiCall(
           messages,

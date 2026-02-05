@@ -53,6 +53,27 @@ export interface DeepSeekChatRequest {
   max_tokens?: number;
 }
 
+// VectorEngine API 类型
+export interface VectorEngineMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface VectorEngineChatRequest {
+  model: string;
+  messages: VectorEngineMessage[];
+  stream: boolean;
+  temperature?: number;
+  max_tokens?: number;
+  tools?: Array<Record<string, unknown>>;
+  tool_choice?: 'none' | 'auto' | Record<string, unknown>;
+  extra_body: {
+    enable_thinking: boolean;
+  };
+  presence_penalty?: number;
+  frequency_penalty?: number;
+}
+
 // Gemini 3.0 API 类型
 export interface Gemini3Content {
   role: 'user' | 'model';

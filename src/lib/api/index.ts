@@ -30,6 +30,13 @@ export {
   testDeepSeekAPIConnection
 } from './deepseek';
 
+// VectorEngine API
+export {
+  convertToVectorEngineFormat,
+  callVectorEngineAPI,
+  callVectorEngineAPIStream
+} from './vectorengine';
+
 // Gemini 3.0 API
 export {
   convertToGemini3NativeFormat,

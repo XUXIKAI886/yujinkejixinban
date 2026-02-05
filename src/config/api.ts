@@ -63,3 +63,15 @@ export const GEMINI3_ENDPOINTS = {
   // Gemini原生流式生成接口
   STREAM_GENERATE: `${GEMINI3_CONFIG.baseUrl}/${GEMINI3_CONFIG.model}:streamGenerateContent`
 };
+
+// VectorEngine API配置
+export const VECTORENGINE_CONFIG = {
+  baseUrl: 'https://api.vectorengine.ai/v1',
+  apiKey: process.env.NEXT_PUBLIC_VECTORENGINE_API_KEY || '',
+  timeout: 60000,
+  maxRetries: 2
+};
+
+export const VECTORENGINE_ENDPOINTS = {
+  CHAT: `${VECTORENGINE_CONFIG.baseUrl}/chat/completions`
+};

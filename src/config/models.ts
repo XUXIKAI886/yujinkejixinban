@@ -642,6 +642,26 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 直接描述您遇到的问题，我会用最专业的方式帮您分析解决！`,
     provider: 'gemini3'
+  },
+  {
+    id: 'vectorengine-kefu-knowledge-base',
+    name: '美团淘宝闪购外卖知识库（实时更新）',
+    description: '实时更新的外卖知识库，解答规则、运营、活动、售后等问题',
+    model: 'grok-3-deepsearch',
+    temperature: 0.3,
+    max_tokens: 4096,
+    icon: 'FileText',
+    systemPrompt: '你是美团淘宝闪购外卖知识库助手，专注提供规则解读、运营规范、活动政策与常见问题的准确答复。只回答外卖运营相关内容，遇到不确定或需要以平台公告为准的情况要明确提示。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
+    welcomeMessage: `欢迎使用美团淘宝闪购外卖知识库（实时更新）！
+
+可咨询内容示例：
+1. 平台规则与违规处理
+2. 活动报名与折扣设置
+3. 配送与售后流程
+4. 评价与申诉规范
+
+请直接描述你的问题，我会给出清晰的规则解读与操作建议。`,
+    provider: 'vectorengine'
   }
 ];
 

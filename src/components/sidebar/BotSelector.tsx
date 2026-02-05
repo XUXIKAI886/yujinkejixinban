@@ -214,6 +214,13 @@ const COZE_BOTS: CozeBot[] = [
     description: '专业的外卖代运营客服，在微信群里与店铺老板进行日常沟通',
     icon: 'Headphones',
     botId: 'gemini-3-pro-preview' // Gemini 3.0 Pro模型
+  },
+  {
+    id: 'kefu-knowledge-base',
+    name: '美团淘宝闪购外卖知识库（实时更新）',
+    description: '实时更新的外卖知识库，解答规则、运营、活动、售后等问题',
+    icon: 'FileText',
+    botId: 'grok-3-deepsearch' // VectorEngine模型
   }
 ];
 
@@ -233,7 +240,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
 
     // 根据不同的机器人选择对应的模型ID
     const getModelId = (botId: string): string => {
-      const modelMap: Record<string, string> = {
+        const modelMap: Record<string, string> = {
         'keyword-optimizer': 'coze',
         'meituan-customer-service': 'coze-meituan',
         'meituan-category-description': 'coze-category',
@@ -255,12 +262,13 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         'eleme-dish-description': 'eleme-dish-description',
         'eleme-review-assistant': 'eleme-review-assistant',
         'eleme-meal-combo': 'eleme-meal-combo',
-        'eleme-weekly-report': 'eleme-weekly-report',
-        'eleme-daily-report': 'eleme-daily-report',
-        'kefu-pro': 'gemini3-kefu-pro',
+          'eleme-weekly-report': 'eleme-weekly-report',
+          'eleme-daily-report': 'eleme-daily-report',
+          'kefu-pro': 'gemini3-kefu-pro',
+          'kefu-knowledge-base': 'vectorengine-kefu-knowledge-base',
+        };
+        return modelMap[botId] || 'coze';
       };
-      return modelMap[botId] || 'coze';
-    };
 
     const modelId = getModelId(bot.id);
     setSelectedModel(modelId);
@@ -322,7 +330,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            已集成23个专业AI助手
+            已集成24个专业AI助手
           </p>
         </div>
       </div>

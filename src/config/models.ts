@@ -62,41 +62,6 @@ export const PRESET_MODELS: ModelConfig[] = [
     systemPrompt: '你是一个耐心的教学助手。请用简单易懂的方式解释复杂概念，提供循序渐进的学习指导，鼓励用户提问和思考。'
   },
   {
-    id: 'coze',
-    name: '关键词优化助手',
-    description: '专业的菜品关键词优化助手，为菜品名称生成优化的关键词',
-    model: 'coze-bot',
-    temperature: 0.7,
-    max_tokens: 4096,
-    icon: 'Search',
-    systemPrompt: '你是一个专业的关键词优化助手，专门为菜品名称生成优化的关键词。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用关键词优化助手！
-
-数据获取指南：
-1. 登录美团外卖商家版
-2. 进入"商品列表"页面
-3. 点击"下载商品"
-4. 复制所有商品名称`,
-    provider: 'coze' // 标识这是Coze提供商
-  },
-  {
-    id: 'coze-meituan',
-    name: '美团全能客服',
-    description: '专业的美团客服助手，提供全方位的客户服务支持',
-    model: 'coze-bot',
-    temperature: 0.7,
-    max_tokens: 4096,
-    icon: 'Headphones',
-    systemPrompt: '你是一个专业的美团客服助手，为用户提供全方位的客户服务支持。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用美团全能客服助手！
-
-常见问题示例：
-1. "为什么没有多少单？"
-2. "做了这么久为什么一直看不到效果？"
-3. "点金充50元是每天都充吗，如果没有效果怎么办？"`,
-    provider: 'coze' // 标识这是Coze提供商
-  },
-  {
     id: 'coze-category',
     name: '美团分类栏描述',
     description: '智能生成店铺分类标签，优化商品展示效果',
@@ -213,38 +178,6 @@ export const PRESET_MODELS: ModelConfig[] = [
     provider: 'coze'
   },
   {
-    id: 'coze-dish-description',
-    name: '外卖菜品描述',
-    description: '能够根据菜品名称精准撰写吸引人的菜品描述',
-    model: 'coze-bot',
-    temperature: 0.8,
-    max_tokens: 4096,
-    icon: 'FileText',
-    systemPrompt: '你是一个专业的菜品描述撰写师，专门根据菜品名称创作吸引人的菜品描述。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用外卖菜品描述助手！
-
-数据获取步骤：
-1. 登录美团外卖商家版
-2. 进入"商品列表"页面
-3. 点击"下载商品"
-4. 复制所有商品名称`,
-    provider: 'coze'
-  },
-  {
-    id: 'coze-brand-story',
-    name: '美团品牌故事',
-    description: '输入店铺名+经营品类 自动生成品牌故事文案',
-    model: 'coze-bot',
-    temperature: 0.8,
-    max_tokens: 4096,
-    icon: 'Sparkles',
-    systemPrompt: '你是一个专业的品牌故事撰写师，专门为美团店铺创作品牌故事文案。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用美团品牌故事
-
-输入店铺名+经营品类 自动生成品牌故事文案`,
-    provider: 'coze'
-  },
-  {
     id: 'coze-dianjin-master',
     name: '美团点金推广大师',
     description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
@@ -260,20 +193,6 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 示例问题2：
 我是做米线的，定向如何设置？`,
-    provider: 'coze'
-  },
-  {
-    id: 'coze-logo-design',
-    name: '美团logo设计',
-    description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
-    model: 'coze-bot',
-    temperature: 0.8,
-    max_tokens: 4096,
-    icon: 'Palette',
-    systemPrompt: '你是一个专业的美团logo设计师，能够根据参考图生成相应的logo设计词汇和建议。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用美团logo设计
-
-请直接上传参考图，我将立即为您创造独特而专业的logo文案！`,
     provider: 'coze'
   },
   {
@@ -415,42 +334,6 @@ export const PRESET_MODELS: ModelConfig[] = [
 人气套餐
 卤汁拌饭
 优惠套餐`,
-    provider: 'coze'
-  },
-  {
-    id: 'eleme-keyword-optimizer',
-    name: '饿了么关键词优化',
-    description: '专注于为饿了么平台产品提供关键词优化服务',
-    model: 'coze-bot',
-    temperature: 0.7,
-    max_tokens: 4096,
-    icon: 'Search',
-    systemPrompt: '你是一个专业的饿了么关键词优化助手，专门为饿了么平台产品提供关键词优化服务。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用饿了么关键词优化助手！
-
-数据获取指南：
-1. 登录饿了么商家版
-2. 进入"商品列表"页面
-3. 点击"下载商品"
-4. 复制所有商品名称`,
-    provider: 'coze'
-  },
-  {
-    id: 'eleme-dish-description',
-    name: '饿了么菜品描述',
-    description: '专注于饿了么撰写吸引人的菜品描述',
-    model: 'coze-bot',
-    temperature: 0.8,
-    max_tokens: 4096,
-    icon: 'FileText',
-    systemPrompt: '你是一个专业的饿了么菜品描述撰写师，专门为饿了么平台撰写吸引人的菜品描述。请使用纯文本格式回复，不要使用Markdown语法（如#、*、-等），直接输出内容即可。',
-    welcomeMessage: `欢迎使用饿了么菜品描述助手！
-
-数据获取步骤：
-1. 登录饿了么商家版
-2. 进入"商品列表"页面
-3. 点击"下载商品"
-4. 复制所有商品名称`,
     provider: 'coze'
   },
   {

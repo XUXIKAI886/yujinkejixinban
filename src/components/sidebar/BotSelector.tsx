@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useChatStore } from '@/lib/store';
-import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Sparkles, Target, Palette, Image, Settings, ScanLine, MessageSquare, Calendar } from 'lucide-react';
+import { Search, ChefHat, LucideIcon, Bot, Headphones, Tags, Package, MessageCircle, Star, BarChart3, TrendingUp, FileText, Target, Image, Settings, ScanLine, MessageSquare, Calendar } from 'lucide-react';
 
 // 图标映射
 const iconMap: Record<string, LucideIcon> = {
@@ -17,9 +17,7 @@ const iconMap: Record<string, LucideIcon> = {
   BarChart3,
   TrendingUp,
   FileText,
-  Sparkles,
   Target,
-  Palette,
   Image,
   Settings,
   ScanLine,
@@ -47,20 +45,6 @@ interface CozeBot {
 
 // 机器人列表配置
 const COZE_BOTS: CozeBot[] = [
-  {
-    id: 'keyword-optimizer',
-    name: '关键词优化助手',
-    description: '专业的菜品关键词优化助手，为菜品名称生成优化的关键词',
-    icon: 'Search',
-    botId: '7432143655349338139' // 关键词优化助手的Coze Bot ID
-  },
-  {
-    id: 'meituan-customer-service',
-    name: '美团全能客服',
-    description: '专业的美团客服助手，提供全方位的客户服务支持',
-    icon: 'Headphones',
-    botId: '7450790638439907355' // 美团全能客服的Coze Bot ID
-  },
   {
     id: 'meituan-category-description',
     name: '美团分类栏描述',
@@ -104,32 +88,11 @@ const COZE_BOTS: CozeBot[] = [
     botId: '7436564709694521371' // 外卖数据周报分析的Coze Bot ID
   },
   {
-    id: 'dish-description-writer',
-    name: '外卖菜品描述',
-    description: '能够根据菜品名称精准撰写吸引人的菜品描述',
-    icon: 'FileText',
-    botId: '7432146500114792487' // 外卖菜品描述的Coze Bot ID
-  },
-  {
-    id: 'meituan-brand-story',
-    name: '美团品牌故事',
-    description: '输入店铺名+经营品类 自动生成品牌故事文案',
-    icon: 'Sparkles',
-    botId: '7488662536091811877' // 美团品牌故事的Coze Bot ID
-  },
-  {
     id: 'meituan-dianjin-master',
     name: '美团点金推广大师',
     description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
     icon: 'Target',
     botId: '7461438144458850340' // 美团点金推广大师的Coze Bot ID
-  },
-  {
-    id: 'meituan-logo-design',
-    name: '美团logo设计',
-    description: '上传美团logo参考图，我能帮你生成一样的logo生成词',
-    icon: 'Palette',
-    botId: '7529356136379219994' // 美团logo设计的Coze Bot ID
   },
   {
     id: 'xiaohongshu-assistant',
@@ -165,20 +128,6 @@ const COZE_BOTS: CozeBot[] = [
     description: '专注于饿了么分类栏描述生成',
     icon: 'Tags',
     botId: '7444769224897085503' // 饿了么分类栏描述的Coze Bot ID
-  },
-  {
-    id: 'eleme-keyword-optimizer',
-    name: '饿了么关键词优化',
-    description: '专注于为饿了么平台产品提供关键词优化服务',
-    icon: 'Search',
-    botId: '7540539099225129000' // 饿了么关键词优化的Coze Bot ID
-  },
-  {
-    id: 'eleme-dish-description',
-    name: '饿了么菜品描述',
-    description: '专注于饿了么撰写吸引人的菜品描述',
-    icon: 'FileText',
-    botId: '7432146500114792487' // 饿了么菜品描述的Coze Bot ID
   },
   {
     id: 'eleme-review-assistant',
@@ -230,7 +179,7 @@ interface BotSelectorProps {
 
 export function BotSelector({ onSelectBot }: BotSelectorProps) {
   const { setSelectedModel, createNewSession, clearAllSessions } = useChatStore();
-  const [selectedBotId, setSelectedBotId] = useState('keyword-optimizer');
+  const [selectedBotId, setSelectedBotId] = useState('meituan-category-description');
 
   const handleSelectBot = (bot: CozeBot) => {
     setSelectedBotId(bot.id);
@@ -241,25 +190,18 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
     // 根据不同的机器人选择对应的模型ID
     const getModelId = (botId: string): string => {
         const modelMap: Record<string, string> = {
-        'keyword-optimizer': 'coze',
-        'meituan-customer-service': 'coze-meituan',
         'meituan-category-description': 'coze-category',
         'meal-combo-assistant': 'coze-meal-combo',
         'meituan-review-assistant': 'coze-review-assistant',
         'takeout-review-generator': 'coze-review-generator',
         'meituan-store-analyzer': 'coze-store-analyzer',
         'takeout-weekly-report': 'coze-weekly-report',
-        'dish-description-writer': 'coze-dish-description',
-        'meituan-brand-story': 'coze-brand-story',
         'meituan-dianjin-master': 'coze-dianjin-master',
-        'meituan-logo-design': 'coze-logo-design',
         'xiaohongshu-assistant': 'gemini3-xiaohongshu',
         'coze-operation-assistant': 'coze-operation-assistant',
         'menu-price-extractor': 'coze-menu-price-extractor',
         'similar-script-generator': 'coze-similar-script',
         'eleme-category-description': 'eleme-category-description',
-        'eleme-keyword-optimizer': 'eleme-keyword-optimizer',
-        'eleme-dish-description': 'eleme-dish-description',
         'eleme-review-assistant': 'eleme-review-assistant',
         'eleme-meal-combo': 'eleme-meal-combo',
           'eleme-weekly-report': 'eleme-weekly-report',
@@ -267,7 +209,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
           'kefu-pro': 'gemini3-kefu-pro',
           'kefu-knowledge-base': 'vectorengine-kefu-knowledge-base',
         };
-        return modelMap[botId] || 'coze';
+        return modelMap[botId] || 'general';
       };
 
     const modelId = getModelId(bot.id);
@@ -330,7 +272,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            已集成24个专业AI助手
+            已集成17个专业AI助手
           </p>
         </div>
       </div>

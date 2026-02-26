@@ -54,7 +54,7 @@ export const DEEPSEEK_ENDPOINTS = {
 export const GEMINI3_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_GEMINI3_BASE_URL || 'https://yunwu.ai/v1beta/models',
   apiKey: process.env.NEXT_PUBLIC_GEMINI3_API_KEY || 'sk-oc2k5DDZqGC8lhGCUPvLHvOvnSEryShZjbTXLgwPKeafhKhR',
-  model: 'gemini-3-pro-preview',
+  model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3-pro-preview',
   timeout: 120000,
   maxRetries: 3
 };

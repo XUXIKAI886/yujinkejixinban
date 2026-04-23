@@ -2,6 +2,7 @@ import { Message } from '@/types';
 import { VECTORENGINE_CONFIG, VECTORENGINE_ENDPOINTS } from '@/config/api';
 import { getModelById } from '@/config/models';
 import { VectorEngineChatRequest, VectorEngineMessage } from './types';
+import { buildVectorEngineRequestBody } from './vectorengineRequest';
 
 // 将消息转换为VectorEngine(OpenAI兼容)格式
 export function convertToVectorEngineFormat(
@@ -37,16 +38,13 @@ export async function callVectorEngineAPI(
   if (!model) throw new Error(`未找到模型: ${modelId}`);
   if (!VECTORENGINE_CONFIG.apiKey) throw new Error('VectorEngine API Key未配置');
 
-  const requestBody: VectorEngineChatRequest = {
+  const requestBody: VectorEngineChatRequest = buildVectorEngineRequestBody({
     model: model.model,
     messages: convertToVectorEngineFormat(messages, model.systemPrompt),
     stream: false,
     temperature: model.temperature,
-    max_tokens: model.max_tokens,
-    tools: [],
-    tool_choice: 'none',
-    extra_body: { enable_thinking: false }
-  };
+    max_tokens: model.max_tokens
+  });
 
   const response = await fetch(VECTORENGINE_ENDPOINTS.CHAT, {
     method: 'POST',
@@ -91,16 +89,13 @@ export async function callVectorEngineAPIStream(
     return;
   }
 
-  const requestBody: VectorEngineChatRequest = {
+  const requestBody: VectorEngineChatRequest = buildVectorEngineRequestBody({
     model: model.model,
     messages: convertToVectorEngineFormat(messages, model.systemPrompt),
     stream: true,
     temperature: model.temperature,
-    max_tokens: model.max_tokens,
-    tools: [],
-    tool_choice: 'none',
-    extra_body: { enable_thinking: false }
-  };
+    max_tokens: model.max_tokens
+  });
 
   try {
     const response = await fetch(VECTORENGINE_ENDPOINTS.CHAT, {

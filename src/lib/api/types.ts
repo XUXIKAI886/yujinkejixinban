@@ -65,8 +65,6 @@ export interface VectorEngineChatRequest {
   stream: boolean;
   temperature?: number;
   max_tokens?: number;
-  tools?: Array<Record<string, unknown>>;
-  tool_choice?: 'none' | 'auto' | Record<string, unknown>;
   extra_body: {
     enable_thinking: boolean;
   };

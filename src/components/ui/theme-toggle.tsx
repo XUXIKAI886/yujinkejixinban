@@ -6,17 +6,17 @@ import { Sun, Moon } from 'lucide-react';
 
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // 初始化主题
   useEffect(() => {
-    // 检查本地存储的主题设置
+    setMounted(true);
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
     setIsDark(shouldBeDark);
 
-    // 应用主题到document
     if (shouldBeDark) {
       document.documentElement.classList.add('dark');
     } else {
@@ -29,7 +29,6 @@ export function ThemeToggle() {
     const newIsDark = !isDark;
     setIsDark(newIsDark);
 
-    // 更新document类名
     if (newIsDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -39,22 +38,36 @@ export function ThemeToggle() {
     }
   };
 
+  // 防止 hydration 不匹配
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-9 h-9 p-0 rounded-lg bg-muted/50"
+        disabled
+      >
+        <div className="w-4 h-4" />
+      </Button>
+    );
+  }
+
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="w-10 h-10 p-0 rounded-lg hover:bg-white/20 dark:hover:bg-gray-700/30 transition-all duration-200 group"
+      className="w-9 h-9 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
       title={isDark ? '切换到浅色模式' : '切换到深色模式'}
     >
-      <div className="relative w-5 h-5">
+      <div className="relative w-4 h-4">
         <Sun
-          className={`absolute inset-0 h-5 w-5 text-gray-600 dark:text-gray-400 transition-all duration-300 ${
+          className={`absolute inset-0 h-4 w-4 transition-all duration-300 ${
             isDark ? 'rotate-90 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100'
           }`}
         />
         <Moon
-          className={`absolute inset-0 h-5 w-5 text-gray-600 dark:text-gray-400 transition-all duration-300 ${
+          className={`absolute inset-0 h-4 w-4 transition-all duration-300 ${
             isDark ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0'
           }`}
         />

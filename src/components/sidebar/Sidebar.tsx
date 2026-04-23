@@ -3,50 +3,59 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BotSelector } from './BotSelector';
-import { WeatherWidget } from '@/components/ui/weather-widget';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800">
-      {/* Header */}
-      <div className="px-4 py-4">
-        <div className="flex items-center justify-between min-h-[2.5rem]">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
-              <span className="text-white dark:text-black text-sm font-bold">AI</span>
+    <div className="flex flex-col h-full bg-sidebar border-r border-sidebar-border">
+      {/* 品牌头部 */}
+      <div className="px-4 py-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* 品牌 Logo */}
+            <div className="relative">
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm">
+                <Sparkles className="h-5 w-5 text-primary-foreground" />
+              </div>
+              {/* 在线状态指示 */}
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-sidebar" />
             </div>
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-              域锦科技
-            </h1>
+            <div>
+              <h1 className="text-base font-semibold text-sidebar-foreground leading-tight">
+                域锦科技
+              </h1>
+              <p className="text-xs text-muted-foreground">AI 智能平台</p>
+            </div>
           </div>
+          
+          {/* 移动端关闭按钮 */}
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="md:hidden h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors rounded-lg"
             onClick={() => setIsOpen(false)}
           >
-            <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Bot Selector */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      {/* 分隔线 */}
+      <div className="px-4">
+        <div className="h-px bg-border" />
+      </div>
+
+      {/* 机器人选择器 */}
+      <div className="flex-1 overflow-hidden py-3">
         <BotSelector onSelectBot={() => setIsOpen(false)} />
       </div>
 
-      {/* Footer */}
-      <div className="p-4">
-        <div className="text-center">
-          <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-              域锦科技AI 系统 v1.0
-            </p>
-          </div>
+      {/* 底部版本信息 */}
+      <div className="px-4 py-4">
+        <div className="text-center text-xs text-muted-foreground">
+          <span>域锦科技 AI v1.0</span>
         </div>
       </div>
     </div>
@@ -54,29 +63,31 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* 移动端菜单按钮 */}
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-lg border border-gray-200 dark:border-gray-600"
+        className="md:hidden fixed top-4 left-4 z-50 h-10 w-10 bg-card hover:bg-accent border-border shadow-lg transition-all rounded-xl"
         onClick={() => setIsOpen(true)}
       >
-        <Menu className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+        <Menu className="h-5 w-5 text-foreground" />
       </Button>
 
-      {/* Desktop sidebar */}
-      <div className="hidden md:block w-80 h-full">
+      {/* 桌面端侧边栏 */}
+      <div className="hidden md:block w-72 h-full flex-shrink-0">
         {sidebarContent}
       </div>
 
-      {/* Mobile sidebar overlay */}
+      {/* 移动端侧边栏遮罩和抽屉 */}
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-40">
+          {/* 背景遮罩 */}
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-foreground/20 backdrop-blur-sm animate-fade-in"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-80 max-w-[80vw]">
+          {/* 侧边栏抽屉 */}
+          <div className="absolute left-0 top-0 h-full w-72 max-w-[85vw] animate-slide-in-left">
             {sidebarContent}
           </div>
         </div>

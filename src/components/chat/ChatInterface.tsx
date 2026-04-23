@@ -26,11 +26,11 @@ export function ChatInterface() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800">
-      {/* Header */}
+    <div className="flex flex-col h-full bg-background">
+      {/* 头部 */}
       <ChatHeader session={currentSession} />
 
-      {/* Messages */}
+      {/* 消息区域 */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto">
           <MessageList
@@ -42,10 +42,8 @@ export function ChatInterface() {
         </div>
       </div>
 
-      {/* Input */}
-      <div>
-        <MessageInput sessionId={currentSession.id} />
-      </div>
+      {/* 输入区域 */}
+      <MessageInput sessionId={currentSession.id} />
     </div>
   );
 }

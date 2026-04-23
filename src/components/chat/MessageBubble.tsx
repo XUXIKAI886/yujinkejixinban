@@ -25,17 +25,6 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
   const hasSVG = !isUser && containsSVG(message.content);
   const svgContent = hasSVG ? extractSVG(message.content) : '';
 
-  // 调试日志
-  if (!isUser && message.content.length > 0) {
-    console.log('📝 [MessageBubble] 检测SVG:', {
-      messageId: message.id,
-      contentLength: message.content.length,
-      hasSVG,
-      svgContentLength: svgContent.length,
-      contentPreview: message.content.substring(0, 100)
-    });
-  }
-
   const handleCopy = async () => {
     try {
       const success = await copyToClipboard(message.content);
@@ -49,11 +38,6 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
   };
 
   const handlePreviewClick = () => {
-    console.log('👁️ [MessageBubble] 点击预览按钮', {
-      hasSVG,
-      svgContentLength: svgContent.length,
-      svgPreview: svgContent.substring(0, 200)
-    });
     setShowSVGPreview(true);
   };
 
@@ -69,13 +53,13 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} group`}>
-      <div className={`flex max-w-[85%] ${isUser ? 'flex-row-reverse' : 'flex-row'} items-start ${isUser ? 'space-x-reverse space-x-3' : 'space-x-3'}`}>
-        {/* Avatar */}
-        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} group animate-slide-up`}>
+      <div className={`flex max-w-[85%] lg:max-w-[75%] ${isUser ? 'flex-row-reverse' : 'flex-row'} items-start gap-3`}>
+        {/* 头像 */}
+        <div className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center ${
           isUser
-            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300'
-            : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted text-muted-foreground'
         }`}>
           {isUser ? (
             <User className="h-4 w-4" />
@@ -84,73 +68,72 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
           )}
         </div>
 
-        {/* Message content */}
-        <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} flex-1`}>
-          <div className={`relative px-4 py-3 rounded-lg ${
+        {/* 消息内容 */}
+        <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} flex-1 min-w-0`}>
+          <div className={`message-bubble relative px-4 py-3 ${
             isUser
-              ? 'bg-blue-100 dark:bg-blue-900/30 text-gray-800 dark:text-blue-100'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+              ? 'message-bubble-user'
+              : 'message-bubble-assistant'
           }`}>
             <div className="whitespace-pre-wrap break-words leading-relaxed text-sm">
               {message.content}
             </div>
 
-            {/* Streaming indicator */}
+            {/* 流式输出指示器 */}
             {message.isStreaming && message.content === '' && (
-              <div className="flex items-center mt-2">
-                <div className="flex space-x-1">
-                  <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse"></div>
-                  <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                </div>
+              <div className="flex items-center gap-1.5 mt-2">
+                <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse-soft" />
+                <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse-soft" style={{ animationDelay: '0.15s' }} />
+                <div className="w-1.5 h-1.5 bg-current rounded-full animate-pulse-soft" style={{ animationDelay: '0.3s' }} />
               </div>
             )}
           </div>
 
-          {/* Message actions and timestamp */}
-          <div className={`flex items-center mt-2 space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : 'flex-row'}`}>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+          {/* 时间戳和操作按钮 */}
+          <div className={`flex items-center mt-2 gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+            <span className="text-xs text-muted-foreground">
               {formatTime(message.timestamp)}
             </span>
 
-            <div className="flex items-center space-x-1">
-              {/* SVG预览按钮 - 只在包含SVG的AI消息上显示 */}
+            <div className="flex items-center gap-1">
+              {/* SVG 预览按钮 */}
               {hasSVG && !message.isStreaming && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-pink-100 dark:hover:bg-pink-900/30 rounded-md"
+                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-pink-500 hover:text-pink-600 hover:bg-pink-500/10 rounded-lg"
                   onClick={handlePreviewClick}
                   title="预览小红书图文"
                 >
-                  <Eye className="h-3.5 w-3.5 text-pink-600 dark:text-pink-400" />
+                  <Eye className="h-3.5 w-3.5" />
                 </Button>
               )}
 
+              {/* 复制按钮 */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+                className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
                 onClick={handleCopy}
                 title="复制消息"
               >
                 {copied ? (
-                  <Check className="h-3.5 w-3.5 text-green-600" />
+                  <Check className="h-3.5 w-3.5 text-emerald-500" />
                 ) : (
-                  <Copy className="h-3.5 w-3.5 text-gray-500" />
+                  <Copy className="h-3.5 w-3.5" />
                 )}
               </Button>
 
-              {/* 重新生成按钮 - 只在最后一条AI消息上显示 */}
+              {/* 重新生成按钮 */}
               {!isUser && isLastMessage && !message.isStreaming && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+                  className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
                   onClick={regenerateLastMessage}
                   title="重新生成"
                 >
-                  <RotateCcw className="h-3.5 w-3.5 text-gray-500" />
+                  <RotateCcw className="h-3.5 w-3.5" />
                 </Button>
               )}
             </div>
@@ -158,7 +141,7 @@ export function MessageBubble({ message, isLastMessage = false }: MessageBubbleP
         </div>
       </div>
 
-      {/* SVG预览模态框 */}
+      {/* SVG 预览模态框 */}
       {hasSVG && (
         <SVGPreviewModal
           svgContent={svgContent}

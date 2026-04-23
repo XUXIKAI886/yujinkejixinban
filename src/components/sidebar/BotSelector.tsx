@@ -50,8 +50,6 @@ const COZE_BOTS: CozeBot[] = [
   { id: 'meituan-dianjin-master', name: '美团点金推广大师', description: '6年推广经验专家', icon: 'Target', botId: '7461438144458850340', category: 'meituan' },
   { id: 'coze-operation-assistant', name: '美团外卖代运营助手', description: '解释优化内容与好处', icon: 'Settings', botId: '7461202295062396954', category: 'meituan' },
   { id: 'menu-price-extractor', name: '提取菜名和价格', description: '精准提取菜单信息', icon: 'ScanLine', botId: '7469300056269602842', category: 'meituan' },
-  { id: 'kefu-pro', name: '在线客服助手PRO', description: '专业代运营客服', icon: 'Headphones', botId: 'gemini-3-pro-preview', category: 'meituan' },
-  { id: 'kefu-knowledge-base', name: '外卖知识库', description: '实时更新规则解答', icon: 'FileText', botId: 'grok-4-20-reasoning', category: 'meituan' },
   { id: 'eleme-category-description', name: '饿了么分类栏描述', description: '饿了么分类标签生成', icon: 'Tags', botId: '7444769224897085503', category: 'eleme' },
   { id: 'eleme-review-assistant', name: '饿了么评价解释助手', description: '饿了么评价回复', icon: 'MessageCircle', botId: '7434355486700568591', category: 'eleme' },
   { id: 'eleme-meal-combo', name: '饿了么套餐搭配助手', description: '套餐组合优化', icon: 'Package', botId: '7540548019217776690', category: 'eleme' },
@@ -59,6 +57,8 @@ const COZE_BOTS: CozeBot[] = [
   { id: 'eleme-daily-report', name: '饿了么日报', description: '运营日报简报', icon: 'FileText', botId: '7541990904928862260', category: 'eleme' },
   { id: 'xiaohongshu-assistant', name: '小红书图文助手', description: '转换为小红书风格图文', icon: 'Image', botId: 'deepseek-chat', category: 'general' },
   { id: 'similar-script-generator', name: '相似话术生成助手', description: '剖析话术核心要点', icon: 'MessageSquare', botId: '7498302515360825407', category: 'general' },
+  { id: 'kefu-pro', name: '在线客服助手PRO', description: '专业代运营客服', icon: 'Headphones', botId: 'gemini-3-pro-preview', category: 'general' },
+  { id: 'kefu-knowledge-base', name: '外卖知识库', description: '实时更新规则解答', icon: 'FileText', botId: 'grok-4-20-reasoning', category: 'general' },
 ];
 
 // 模型ID映射

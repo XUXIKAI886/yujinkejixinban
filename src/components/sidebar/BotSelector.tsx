@@ -169,7 +169,7 @@ const COZE_BOTS: CozeBot[] = [
     name: '美团淘宝闪购外卖知识库（实时更新）',
     description: '实时更新的外卖知识库，解答规则、运营、活动、售后等问题',
     icon: 'FileText',
-    botId: 'grok-3-deepsearch' // VectorEngine模型
+    botId: 'grok-4-20-reasoning' // OpenAI兼容模型
   }
 ];
 

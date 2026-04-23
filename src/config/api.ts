@@ -66,7 +66,7 @@ export const GEMINI3_ENDPOINTS = {
 
 // VectorEngine API配置
 export const VECTORENGINE_CONFIG = {
-  baseUrl: 'https://api.vectorengine.ai/v1',
+  baseUrl: process.env.NEXT_PUBLIC_VECTORENGINE_BASE_URL || 'https://yunwu.ai/v1',
   apiKey: process.env.NEXT_PUBLIC_VECTORENGINE_API_KEY || '',
   timeout: 60000,
   maxRetries: 2

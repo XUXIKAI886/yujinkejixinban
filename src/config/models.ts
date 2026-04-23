@@ -530,7 +530,7 @@ export const PRESET_MODELS: ModelConfig[] = [
     id: 'vectorengine-kefu-knowledge-base',
     name: '美团淘宝闪购外卖知识库（实时更新）',
     description: '实时更新的外卖知识库，解答规则、运营、活动、售后等问题',
-    model: 'grok-3-deepsearch',
+    model: process.env.NEXT_PUBLIC_VECTORENGINE_MODEL || 'grok-4-20-reasoning',
     temperature: 0.3,
     max_tokens: 4096,
     icon: 'FileText',

@@ -34,142 +34,123 @@ const renderIcon = (iconName: string, className?: string) => {
   return <IconComponent className={className} />;
 };
 
-// Coze机器人配置
-interface CozeBot {
+// 侧边栏机器人配置
+interface AssistantBot {
   id: string;
   name: string;
   description: string;
   icon: string;
-  botId: string; // Coze平台的Bot ID
 }
 
 // 机器人列表配置
-const COZE_BOTS: CozeBot[] = [
+const ASSISTANT_BOTS: AssistantBot[] = [
   {
     id: 'meituan-category-description',
     name: '美团分类栏描述',
     description: '智能生成店铺分类标签，优化商品展示效果',
-    icon: 'Tags',
-    botId: '7444769224897085503' // 美团分类栏描述的Coze Bot ID
+    icon: 'Tags'
   },
   {
     id: 'meal-combo-assistant',
     name: '外卖套餐搭配助手',
     description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
-    icon: 'Package',
-    botId: '7432277388740329487' // 外卖套餐搭配助手的Coze Bot ID
+    icon: 'Package'
   },
   {
     id: 'meituan-review-assistant',
     name: '美团评价解释助手',
     description: '专业回复顾客评价，提升店铺好评率',
-    icon: 'MessageCircle',
-    botId: '7434355486700568591' // 美团评价解释助手的Coze Bot ID
+    icon: 'MessageCircle'
   },
   {
     id: 'takeout-review-generator',
     name: '补单专用外卖好评',
     description: '定制个性化评价内容，增加店铺真实性',
-    icon: 'Star',
-    botId: '7435167383192518675' // 补单专用外卖好评的Coze Bot ID
+    icon: 'Star'
   },
   {
     id: 'meituan-store-analyzer',
     name: '美团店铺分解析',
     description: '深度分析店铺数据，优化经营策略',
-    icon: 'BarChart3',
-    botId: '7441487397063245859' // 美团店铺分解析的Coze Bot ID
+    icon: 'BarChart3'
   },
   {
     id: 'takeout-weekly-report',
     name: '外卖数据周报分析',
     description: '智能分析周数据报表，指导经营决策',
-    icon: 'TrendingUp',
-    botId: '7436564709694521371' // 外卖数据周报分析的Coze Bot ID
+    icon: 'TrendingUp'
   },
   {
     id: 'meituan-dianjin-master',
     name: '美团点金推广大师',
     description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
-    icon: 'Target',
-    botId: '7461438144458850340' // 美团点金推广大师的Coze Bot ID
+    icon: 'Target'
   },
   {
     id: 'xiaohongshu-assistant',
     name: '小红书风格图文助手',
     description: '可以将任何文档内容转换成精美好看的小红书风格图文',
-    icon: 'Image',
-    botId: 'deepseek-chat' // DeepSeek模型
+    icon: 'Image'
   },
   {
     id: 'coze-operation-assistant',
     name: '美团外卖代运营助手',
     description: '用简洁明了的语言向商家解释各项优化的内容、目的和好处',
-    icon: 'Settings',
-    botId: '7461202295062396954' // 美团外卖代运营助手的Coze Bot ID
+    icon: 'Settings'
   },
   {
     id: 'menu-price-extractor',
     name: '提取菜名和价格',
     description: '精准提取图中的菜品名称和价格',
-    icon: 'ScanLine',
-    botId: '7469300056269602842' // 提取菜名和价格的Coze Bot ID
+    icon: 'ScanLine'
   },
   {
     id: 'similar-script-generator',
     name: '相似话术生成助手',
     description: '擅长剖析各类话术，精准把握其核心要点',
-    icon: 'MessageSquare',
-    botId: '7498302515360825407' // 相似话术生成助手的Coze Bot ID
+    icon: 'MessageSquare'
   },
   {
     id: 'eleme-category-description',
     name: '饿了么分类栏描述',
     description: '专注于饿了么分类栏描述生成',
-    icon: 'Tags',
-    botId: '7444769224897085503' // 饿了么分类栏描述的Coze Bot ID
+    icon: 'Tags'
   },
   {
     id: 'eleme-review-assistant',
     name: '饿了么评价解释助手',
     description: '专注于饿了么回复顾客评价，提升店铺好评率',
-    icon: 'MessageCircle',
-    botId: '7434355486700568591' // 饿了么评价解释助手的Coze Bot ID
+    icon: 'MessageCircle'
   },
   {
     id: 'eleme-meal-combo',
     name: '饿了么套餐搭配助手',
     description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
-    icon: 'Package',
-    botId: '7540548019217776690' // 饿了么套餐搭配助手的Coze Bot ID
+    icon: 'Package'
   },
   {
     id: 'eleme-weekly-report',
     name: '饿了么周报',
     description: '专注于为饿了么外卖店铺生成内容详实的运营周报',
-    icon: 'Calendar',
-    botId: '7541341177451446287' // 饿了么周报的Coze Bot ID
+    icon: 'Calendar'
   },
   {
     id: 'eleme-daily-report',
     name: '饿了么日报',
     description: '专注于为饿了么外卖店铺生成内容详实的运营日报简报',
-    icon: 'FileText',
-    botId: '7541990904928862260' // 饿了么日报的Coze Bot ID
+    icon: 'FileText'
   },
   {
     id: 'kefu-pro',
     name: '美团淘宝闪购在线客服助手PRO',
     description: '专业的外卖代运营客服，在微信群里与店铺老板进行日常沟通',
-    icon: 'Headphones',
-    botId: 'gemini-3-pro-preview' // Gemini 3.0 Pro模型
+    icon: 'Headphones'
   },
   {
     id: 'kefu-knowledge-base',
     name: '美团淘宝闪购外卖知识库（实时更新）',
     description: '实时更新的外卖知识库，解答规则、运营、活动、售后等问题',
-    icon: 'FileText',
-    botId: 'grok-4-20-reasoning' // OpenAI兼容模型
+    icon: 'FileText'
   }
 ];
 
@@ -181,14 +162,14 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
   const { setSelectedModel, createNewSession, clearAllSessions } = useChatStore();
   const [selectedBotId, setSelectedBotId] = useState('meituan-category-description');
 
-  const handleSelectBot = (bot: CozeBot) => {
+  const handleSelectBot = (bot: AssistantBot) => {
     setSelectedBotId(bot.id);
 
     // 清空所有会话，确保完全重新开始
     clearAllSessions();
 
     // 根据不同的机器人选择对应的模型ID
-    const getModelId = (botId: string): string => {
+    const getModelId = (assistantId: string): string => {
         const modelMap: Record<string, string> = {
         'meituan-category-description': 'coze-category',
         'meal-combo-assistant': 'coze-meal-combo',
@@ -209,7 +190,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
           'kefu-pro': 'gemini3-kefu-pro',
           'kefu-knowledge-base': 'vectorengine-kefu-knowledge-base',
         };
-        return modelMap[botId] || 'general';
+        return modelMap[assistantId] || 'general';
       };
 
     const modelId = getModelId(bot.id);
@@ -234,7 +215,7 @@ export function BotSelector({ onSelectBot }: BotSelectorProps) {
       </div>
 
       <div className="space-y-1">
-        {COZE_BOTS.map((bot) => (
+        {ASSISTANT_BOTS.map((bot) => (
           <Button
             key={bot.id}
             variant="ghost"

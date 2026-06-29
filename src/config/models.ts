@@ -65,7 +65,7 @@ export const PRESET_MODELS: ModelConfig[] = [
     id: 'coze-category',
     name: '美团分类栏描述',
     description: '智能生成店铺分类标签，优化商品展示效果',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Tags',
@@ -77,13 +77,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 人气套餐
 卤汁拌饭
 优惠套餐`,
-    provider: 'coze' // 标识这是Coze提供商
+    provider: 'gemini3' // 第三方API提供商
   },
   {
     id: 'coze-meal-combo',
     name: '外卖套餐搭配助手',
     description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Package',
@@ -100,13 +100,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 卤蛋          ¥3.00
 豆腐          ¥4.00
 血旺          ¥4.00`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-review-assistant',
     name: '美团评价解释助手',
     description: '专业回复顾客评价，提升店铺好评率',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'MessageCircle',
@@ -119,13 +119,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 【差评内容】
 [请粘贴差评内容...]`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-review-generator',
     name: '补单专用外卖好评',
     description: '定制个性化评价内容，增加店铺真实性',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.8,
     max_tokens: 4096,
     icon: 'Star',
@@ -135,13 +135,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 示例请求：
 请帮我写3个关于麻辣烫店铺的好评
 特色：食材新鲜，汤底鲜美，服务热情`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-store-analyzer',
     name: '美团店铺分解析',
     description: '深度分析店铺数据，优化经营策略',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.6,
     max_tokens: 4096,
     icon: 'BarChart3',
@@ -152,13 +152,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 1. 登录美团商家版后台
 2. 找到"店铺分"板块
 3. 复制完整的数据内容`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-weekly-report',
     name: '外卖数据周报分析',
     description: '智能分析周数据报表，指导经营决策',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.6,
     max_tokens: 4096,
     icon: 'TrendingUp',
@@ -175,13 +175,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 下单人数：25人
 入店转化率：7.31%
 下单转化率：7.08%`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-dianjin-master',
     name: '美团点金推广大师',
     description: '拥有6年推广经验，操盘过数百店铺，熟悉美团点金推广的操作手法与所有规则',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Target',
@@ -193,13 +193,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 示例问题2：
 我是做米线的，定向如何设置？`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'gemini3-xiaohongshu',
     name: '小红书风格图文助手',
     description: '可以将任何文档内容转换成精美好看的小红书风格图文',
-    model: 'gemini-3-pro-preview',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 8192,
     icon: 'Image',
@@ -279,7 +279,7 @@ export const PRESET_MODELS: ModelConfig[] = [
     id: 'coze-operation-assistant',
     name: '美团外卖代运营助手',
     description: '用简洁明了的语言向商家解释各项优化的内容、目的和好处',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Settings',
@@ -288,13 +288,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 示例数据：
 "分类栏优化已上线"`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-menu-price-extractor',
     name: '提取菜名和价格',
     description: '精准提取图中的菜品名称和价格',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.3,
     max_tokens: 4096,
     icon: 'ScanLine',
@@ -302,13 +302,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     welcomeMessage: `欢迎使用提取菜名和价格助手！
 
 请直接上传菜单图，我能精准提取图中的菜品名称和价格`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'coze-similar-script',
     name: '相似话术生成助手',
     description: '擅长剖析各类话术，精准把握其核心要点',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'MessageSquare',
@@ -316,13 +316,13 @@ export const PRESET_MODELS: ModelConfig[] = [
     welcomeMessage: `欢迎使用相似话术生成助手！
 
 请直接发送话术，我会给您生成三种不一样的话术内容`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'eleme-category-description',
     name: '饿了么分类栏描述',
     description: '专注于饿了么分类栏描述生成',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Tags',
@@ -334,13 +334,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 人气套餐
 卤汁拌饭
 优惠套餐`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'eleme-review-assistant',
     name: '饿了么评价解释助手',
     description: '专注于饿了么回复顾客评价，提升店铺好评率',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'MessageCircle',
@@ -353,13 +353,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 
 【差评内容】
 [请粘贴差评内容...]`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'eleme-meal-combo',
     name: '饿了么套餐搭配助手',
     description: '一个套餐会搭配2个菜品，并生成套餐关键词优化',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Package',
@@ -376,13 +376,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 卤蛋          ¥3.00
 豆腐          ¥4.00
 血旺          ¥4.00`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'eleme-weekly-report',
     name: '饿了么周报',
     description: '专注于为饿了么外卖店铺生成内容详实的运营周报',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'Calendar',
@@ -400,13 +400,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 • 销售额变化趋势
 • 用户评价汇总
 • 运营建议与改进方案`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'eleme-daily-report',
     name: '饿了么日报',
     description: '专注于为饿了么外卖店铺生成内容详实的运营日报简报',
-    model: 'coze-bot',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 4096,
     icon: 'FileText',
@@ -425,13 +425,13 @@ export const PRESET_MODELS: ModelConfig[] = [
 • 热门商品排行
 • 客户反馈摘要
 • 明日运营建议`,
-    provider: 'coze'
+    provider: 'gemini3'
   },
   {
     id: 'gemini3-kefu-pro',
     name: '美团淘宝闪购在线客服助手PRO',
     description: '专业的美团/淘宝闪购外卖代运营客服，结合真实商家群语境处理单量、活动、推广、扣费、授权、评价和解约等问题',
-    model: 'gemini-3-pro-preview',
+    model: process.env.NEXT_PUBLIC_GEMINI3_MODEL || 'gemini-3.1-flash-lite',
     temperature: 0.7,
     max_tokens: 8192,
     icon: 'Headphones',
